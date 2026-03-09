@@ -70,13 +70,13 @@ canvas { max-width:100%; }
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// Offline storage
+// ---- Offline storage ----
 let responses = JSON.parse(localStorage.getItem("surveyData")) || [];
 
-// Scoring
+// ---- Scoring ----
 const scores = {"Very Important":5,"Important":4,"Neutral":3,"Not Important":1};
 
-// Form submission
+// ---- Form submission ----
 document.getElementById("surveyForm").addEventListener("submit", e => {
     e.preventDefault();
     let formData = new FormData(e.target);
@@ -98,19 +98,19 @@ document.getElementById("surveyForm").addEventListener("submit", e => {
     e.target.reset();
 });
 
-// Send to Node.js API
+// ---- Send to Node.js API ----
 function sendToAPI(entry){
-    fetch("https://nonso-mfkv.onrender.com", {
+    fetch("https://survey-2-v8nc.onrender.com/api/submit", {  // <-- use your Render API URL
         method: "POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify(entry)
     })
     .then(r=>r.json())
     .then(d=>console.log("Sent to API:", d))
-    .catch(()=>console.log("Offline, will retry later"));
+    .catch(err=>console.log("Offline, will retry later"));
 }
 
-// Retry pending responses
+// ---- Retry pending responses ----
 function sendPendingResponses(){
     if(navigator.onLine){
         responses.forEach(entry=>sendToAPI(entry));
@@ -121,7 +121,7 @@ function sendPendingResponses(){
 setInterval(sendPendingResponses,5000);
 window.addEventListener("online",sendPendingResponses);
 
-// Download JSON
+// ---- Download JSON ----
 document.getElementById("downloadJSON").addEventListener("click", () => {
     if(responses.length===0){ alert("No responses!"); return; }
     const blob = new Blob([JSON.stringify(responses,null,2)],{type:"application/json"});
@@ -131,7 +131,7 @@ document.getElementById("downloadJSON").addEventListener("click", () => {
     a.click();
 });
 
-// Download CSV
+// ---- Download CSV ----
 document.getElementById("downloadCSV").addEventListener("click", () => {
     if(responses.length===0){ alert("No responses!"); return; }
     const headers = Object.keys(responses[0]);
@@ -146,7 +146,7 @@ document.getElementById("downloadCSV").addEventListener("click", () => {
     a.click();
 });
 
-// Show Charts
+// ---- Show Charts ----
 document.getElementById("showCharts").addEventListener("click", () => {
     if(responses.length===0){ alert("No responses!"); return; }
     const counts = {"Very Important":0,"Important":0,"Neutral":0,"Not Important":0};
@@ -165,5 +165,6 @@ document.getElementById("showCharts").addEventListener("click", () => {
     });
 });
 </script>
+
 </body>
 </html>
