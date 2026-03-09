@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Research Survey</title>
+<style>
+body { font-family: Arial; margin:0; padding:10px; max-width:480px; margin:auto; }
+h2 { text-align:center; }
+.question { margin-bottom:15px; }
+input, select, textarea, button { width:100%; font-size:18px; padding:12px; margin-top:8px; }
+button { border-radius:8px; background:#2196F3; color:white; border:none; }
+.button-group { display:flex; flex-direction:column; gap:10px; margin-top:15px; }
+#charts { margin-top:30px; }
+canvas { max-width:100%; }
+</style>
+</head>
+<body>
+
+<h2>AI Research Survey</h2>
+
+<form id="surveyForm">
+  <div class="question">
+    <label>1. Field of Study:</label>
+    <input type="text" name="field" placeholder="e.g., Computer Science" required>
+  </div>
+
+  <div class="question">
+    <label>2. Used AI tools for research?</label>
+    <select name="ai_use" required>
+      <option value="">Select</option>
+      <option>Yes</option>
+      <option>No</option>
+    </select>
+  </div>
+
+  <div class="question">
+    <label>3. How important is AI for Nigeria’s development?</label>
+    <select name="importance" required>
+      <option value="">Select</option>
+      <option>Very Important</option>
+      <option>Important</option>
+      <option>Neutral</option>
+      <option>Not Important</option>
+    </select>
+  </div>
+
+  <div class="question">
+    <label>4. AI tools you use:</label>
+    <input type="text" name="tools" placeholder="e.g., ChatGPT, Python">
+  </div>
+
+  <div class="question">
+    <label>5. Suggestions:</label>
+    <textarea name="suggestions" rows="3" placeholder="Your suggestions..."></textarea>
+  </div>
+
+  <button type="submit">Submit</button>
+</form>
+
+<div class="button-group">
+  <button id="downloadJSON">Download JSON</button>
+  <button id="downloadCSV">Download CSV</button>
+  <button id="showCharts">Show Charts</button>
+</div>
+
+<div id="charts">
+  <canvas id="importanceChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Offline storage
+let responses = JSON.parse(localStorage.getItem("surveyData")) || [];
+
+// Scoring
+const scores = {"Very Important":5,"Important":4,"Neutral":3,"Not Important":1};
+
+// Form submission
+document.getElementById("surveyForm").addEventListener("submit", e => {
+    e.preventDefault();
+    let formData = new FormData(e.target);
+    let entry = {};
+    formData.forEach((value, key)=>{ entry[key]=value; });
+
+    entry.score = scores[entry.importance] || 0;
+    entry.timestamp = new Date().toISOString();
+    entry.id = Date.now();
+
+    // Save offline
+    responses.push(entry);
+    localStorage.setItem("surveyData", JSON.stringify(responses));
+
+    // Send to API
+    sendToAPI(entry);
+
+    alert("Response saved offline!");
+    e.target.reset();
+});
+
+// Send to Node.js API
+function sendToAPI(entry){
+    fetch("https://nonso-mfkv.onrender.com", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(entry)
+    })
+    .then(r=>r.json())
+    .then(d=>console.log("Sent to API:", d))
+    .catch(()=>console.log("Offline, will retry later"));
+}
+
+// Retry pending responses
+function sendPendingResponses(){
+    if(navigator.onLine){
+        responses.forEach(entry=>sendToAPI(entry));
+        localStorage.removeItem("surveyData");
+        responses=[];
+    }
+}
+setInterval(sendPendingResponses,5000);
+window.addEventListener("online",sendPendingResponses);
+
+// Download JSON
+document.getElementById("downloadJSON").addEventListener("click", () => {
+    if(responses.length===0){ alert("No responses!"); return; }
+    const blob = new Blob([JSON.stringify(responses,null,2)],{type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download="survey_results.json";
+    a.click();
+});
+
+// Download CSV
+document.getElementById("downloadCSV").addEventListener("click", () => {
+    if(responses.length===0){ alert("No responses!"); return; }
+    const headers = Object.keys(responses[0]);
+    let csv = headers.join(",") + "\n";
+    responses.forEach(r=>{
+        csv += headers.map(h=>`"${(r[h]||"").replace(/"/g,'""')}"`).join(",") + "\n";
+    });
+    const blob = new Blob([csv],{type:"text/csv"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download="survey_results.csv";
+    a.click();
+});
+
+// Show Charts
+document.getElementById("showCharts").addEventListener("click", () => {
+    if(responses.length===0){ alert("No responses!"); return; }
+    const counts = {"Very Important":0,"Important":0,"Neutral":0,"Not Important":0};
+    responses.forEach(r=>{ if(counts[r.importance]!==undefined) counts[r.importance]++; });
+
+    const ctx = document.getElementById("importanceChart").getContext("2d");
+    if(window.importanceChart) window.importanceChart.destroy();
+
+    window.importanceChart = new Chart(ctx,{
+        type:'bar',
+        data:{
+            labels:Object.keys(counts),
+            datasets:[{ label:'Responses', data:Object.values(counts), backgroundColor:'rgba(54,162,235,0.6)' }]
+        },
+        options:{ responsive:true, maintainAspectRatio:false }
+    });
+});
+</script>
+</body>
+</html>
