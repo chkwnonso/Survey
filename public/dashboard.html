@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>AI Research Dashboard</title>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <link rel="stylesheet" href="style.css">
-
+<!-- Optional: Leaflet for Nigeria map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 
 <body>
@@ -18,55 +15,159 @@
 <h1>AI Research Dashboard</h1>
 
 <h2>Total Responses</h2>
-
 <h3 id="total">0</h3>
 
+<!-- Original single chart -->
 <canvas id="chart"></canvas>
 
-<script>
+<!-- Container for automatic charts -->
+<div id="charts"></div>
 
-const API = "/api/responses"
+<!-- AI Tools Pie Chart -->
+<h2>AI Tools Usage</h2>
+<canvas id="toolsChart"></canvas>
+
+<!-- Nigeria Map -->
+<h2>Nigeria AI Adoption Map</h2>
+<div id="map" style="height:400px;"></div>
+
+<!-- Research report generator -->
+<button onclick="generateReport()">Generate Research Report</button>
+
+<script>
+const API = "/api/responses";
 
 async function loadData(){
+    const res = await fetch(API);
+    const data = await res.json();
 
-const res = await fetch(API)
+    // Update total responses
+    document.getElementById("total").innerText = data.length;
 
-const data = await res.json()
+    // --- Original chart ---
+    const counts = {
+        "Very Important":0,
+        "Important":0,
+        "Neutral":0,
+        "Not Important":0
+    };
 
-document.getElementById("total").innerText = data.length
+    data.forEach(r=>{
+        if(counts[r.importance] !== undefined){
+            counts[r.importance]++;
+        }
+    });
 
-const counts = {
-"Very Important":0,
-"Important":0,
-"Neutral":0,
-"Not Important":0
+    const ctx = document.getElementById("chart");
+    new Chart(ctx,{
+        type:"bar",
+        data:{
+            labels:Object.keys(counts),
+            datasets:[{
+                label:"Importance of AI for Nigeria",
+                data:Object.values(counts)
+            }]
+        }
+    });
+
+    // --- Automatic charts for all survey questions ---
+    const chartContainer = document.getElementById("charts");
+    const keys = Object.keys(data[0] || {});
+    keys.forEach(key => {
+        if(key === "timestamp" || key === "id") return;
+
+        const counts = {};
+        data.forEach(r => {
+            const value = r[key];
+            if(!value) return;
+            counts[value] = (counts[value] || 0) + 1;
+        });
+
+        const canvas = document.createElement("canvas");
+        chartContainer.appendChild(canvas);
+
+        new Chart(canvas,{
+            type:"bar",
+            data:{
+                labels:Object.keys(counts),
+                datasets:[{
+                    label:key,
+                    data:Object.values(counts),
+                    backgroundColor:'rgba(54,162,235,0.6)'
+                }]
+            },
+            options:{ responsive:true, maintainAspectRatio:false }
+        });
+    });
+
+    // --- AI Tools Usage Pie Chart ---
+    const tools = {};
+    data.forEach(r=>{
+        if(!r.tools) return;
+        r.tools.split(",").forEach(t=>{
+            const tool = t.trim();
+            if(!tool) return;
+            tools[tool] = (tools[tool] || 0) + 1;
+        });
+    });
+
+    new Chart(document.getElementById("toolsChart"),{
+        type:"pie",
+        data:{
+            labels:Object.keys(tools),
+            datasets:[{
+                data:Object.values(tools),
+                backgroundColor: [
+                    "#FF6384","#36A2EB","#FFCE56","#4BC0C0","#9966FF","#FF9F40"
+                ]
+            }]
+        }
+    });
+
+    // --- Nigeria AI Adoption Map ---
+    const map = L.map('map').setView([9.0820, 8.6753], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a>'
+    }).addTo(map);
+
+    data.forEach(r=>{
+        if(!r.state) return;
+        // Add a marker for some states as an example
+        const positions = {
+            "Lagos":[6.5244,3.3792],
+            "Abuja":[9.0765,7.3986],
+            "Oyo":[7.3775,3.9470],
+            "Enugu":[6.4416,7.4986],
+            "Kaduna":[10.5105,7.4165]
+        };
+        if(positions[r.state]){
+            L.marker(positions[r.state]).addTo(map).bindPopup(r.state);
+        }
+    });
+
 }
 
-data.forEach(r=>{
-if(counts[r.importance] !== undefined){
-counts[r.importance]++
-}
-})
-
-const ctx = document.getElementById("chart")
-
-new Chart(ctx,{
-type:"bar",
-data:{
-labels:Object.keys(counts),
-datasets:[{
-label:"Importance of AI for Nigeria",
-data:Object.values(counts)
-}]
-}
-})
-
+// --- Generate Research Report ---
+function generateReport(){
+    fetch(API)
+    .then(res=>res.json())
+    .then(data=>{
+        const total = data.length;
+        let report = `AI Research Nigeria Report\n====================\n\nTotal Respondents: ${total}\n\nAI Usage Trends:\n----------------\n`;
+        data.forEach(r=>{
+            report += `Field: ${r.course || r.field}\nUses AI: ${r.ai_use || "N/A"}\nImportance: ${r.importance || "N/A"}\n\n`;
+        });
+        const blob = new Blob([report], {type:"text/plain"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "AI_Research_Report.txt";
+        a.click();
+    });
 }
 
-loadData()
+loadData();
 
 </script>
 
 </body>
-
 </html>
