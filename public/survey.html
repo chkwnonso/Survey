@@ -11,9 +11,7 @@ h2 { text-align:center; margin-bottom:20px; }
 .question { margin-bottom:15px; }
 input, select, textarea, button { width:100%; font-size:18px; padding:12px; margin-top:8px; }
 button { border-radius:8px; background:#2196F3; color:white; border:none; cursor:pointer; }
-.button-group { display:flex; flex-direction:column; gap:10px; margin-top:15px; }
-#charts { margin-top:30px; }
-canvas { max-width:100%; }
+#navButtons { display:flex; justify-content:space-between; margin-top:20px; }
 </style>
 
 </head>
@@ -23,20 +21,10 @@ canvas { max-width:100%; }
 
 <form id="surveyForm">
   <div id="questions"></div>
-  <button type="submit">Submit</button>
+  <!-- Navigation buttons injected here by survey.js -->
+  <div id="navButtons"></div>
 </form>
 
-<div class="button-group">
-  <button id="downloadJSON">Download JSON</button>
-  <button id="downloadCSV">Download CSV</button>
-  <button id="showCharts">Show Charts</button>
-</div>
-
-<div id="charts">
-  <canvas id="importanceChart"></canvas>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="survey.js"></script>
 
 </body>
