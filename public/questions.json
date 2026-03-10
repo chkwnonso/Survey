@@ -1,35 +1,35 @@
 [
-{
-"id":"field",
-"question":"Field of Study",
-"type":"text",
-"placeholder":"e.g., Computer Science"
-},
-
-{
-"id":"ai_use",
-"question":"Used AI tools for research?",
-"type":"select",
-"options":["Yes","No"]
-},
-
-{
-"id":"importance",
-"question":"How important is AI for Nigeria’s development?",
-"type":"select",
-"options":["Very Important","Important","Neutral","Not Important"]
-},
-
-{
-"id":"tools",
-"question":"AI tools you use",
-"type":"text",
-"placeholder":"ChatGPT, Python, etc"
-},
-
-{
-"id":"suggestions",
-"question":"Suggestions",
-"type":"textarea"
-}
+  {
+    "id": "field",
+    "question": "Field of Study",
+    "type": "text",
+    "placeholder": "e.g., Computer Science",
+    "required": true
+  },
+  {
+    "id": "ai_use",
+    "question": "Used AI tools for research?",
+    "type": "select",
+    "options": ["Yes", "No"],
+    "required": true
+  },
+  {
+    "id": "importance",
+    "question": "How important is AI for Nigeria’s development?",
+    "type": "select",
+    "options": ["Very Important", "Important", "Neutral", "Not Important"],
+    "required": true
+  },
+  {
+    "id": "tools",
+    "question": "AI tools you use",
+    "type": "text",
+    "placeholder": "e.g., ChatGPT, Python"
+  },
+  {
+    "id": "suggestions",
+    "question": "Suggestions",
+    "type": "textarea",
+    "placeholder": "Your suggestions..."
+  }
 ]
