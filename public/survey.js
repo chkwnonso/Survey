@@ -84,13 +84,13 @@ fetch("questions.json")
 
     const form = document.getElementById("surveyForm");
 
-    questions.forEach(q => {
+    questions.forEach((q,i)=> {
 
         const div = document.createElement("div");
         div.className = "question";
 
         const label = document.createElement("label");
-        label.innerText = q.id + ". " + q.text;
+        label.innerText = (i+1) + ". " + (q.question || "");
         div.appendChild(label);
 
         // TEXT INPUT

@@ -59,7 +59,7 @@ const div = document.createElement("div")
 div.className = "question"
 
 const label = document.createElement("label")
-label.innerText = q.question
+label.innerText = q.question || q.label || ""
 div.appendChild(label)
 
 if(q.type==="text"){
