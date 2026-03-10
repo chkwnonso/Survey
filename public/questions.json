@@ -1,19 +1,35 @@
 [
-  {
-    "id":1,
-    "text":"What is your university?",
-    "type":"text"
-  },
-  {
-    "id":2,
-    "text":"Have you used AI tools?",
-    "type":"radio",
-    "options":["Yes","No"]
-  },
-  {
-    "id":3,
-    "text":"How important is AI for Nigeria?",
-    "type":"radio",
-    "options":["Very Important","Important","Neutral","Not Important"]
-  }
+{
+"id":"field",
+"question":"Field of Study",
+"type":"text",
+"placeholder":"e.g., Computer Science"
+},
+
+{
+"id":"ai_use",
+"question":"Used AI tools for research?",
+"type":"select",
+"options":["Yes","No"]
+},
+
+{
+"id":"importance",
+"question":"How important is AI for Nigeria’s development?",
+"type":"select",
+"options":["Very Important","Important","Neutral","Not Important"]
+},
+
+{
+"id":"tools",
+"question":"AI tools you use",
+"type":"text",
+"placeholder":"ChatGPT, Python, etc"
+},
+
+{
+"id":"suggestions",
+"question":"Suggestions",
+"type":"textarea"
+}
 ]
