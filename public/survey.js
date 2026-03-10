@@ -1,4 +1,4 @@
-// survey.js - multi-page dynamic survey
+// survey.js - multi-page dynamic survey with progress bar
 
 const API_URL = "https://survey-2-v8nc.onrender.com/api/submit";
 
@@ -57,14 +57,13 @@ function renderSection(index) {
     title.innerText = section.name;
     container.appendChild(title);
 
-    section.questions.forEach((q,i) => {
+    section.questions.forEach((q, i) => {
 
         const div = document.createElement("div");
         div.className = "question";
 
         const label = document.createElement("label");
-        label.innerText = (i+1) + ". " + q.question;
-
+        label.innerText = (i + 1) + ". " + q.question;
         div.appendChild(label);
 
         let value = sectionResponses[index][q.id] || "";
@@ -75,7 +74,6 @@ function renderSection(index) {
             input.type = "text";
             input.name = q.id;
             input.value = value;
-
             if (q.required) input.required = true;
 
             div.appendChild(input);
@@ -86,7 +84,6 @@ function renderSection(index) {
             textarea.name = q.id;
             textarea.rows = 3;
             textarea.value = value;
-
             if (q.required) textarea.required = true;
 
             div.appendChild(textarea);
@@ -95,6 +92,7 @@ function renderSection(index) {
 
             const select = document.createElement("select");
             select.name = q.id;
+            if (q.required) select.required = true;
 
             const empty = document.createElement("option");
             empty.value = "";
@@ -102,25 +100,23 @@ function renderSection(index) {
             select.appendChild(empty);
 
             (q.options || []).forEach(opt => {
-
                 const option = document.createElement("option");
                 option.value = opt;
                 option.innerText = opt;
-
                 if (value === opt) option.selected = true;
-
                 select.appendChild(option);
-
             });
 
             div.appendChild(select);
         }
 
         container.appendChild(div);
-
     });
 
     renderNavButtons();
+
+    // ---- Update progress bar ----
+    updateProgressBar();
 }
 
 // ---- Navigation buttons ----
@@ -139,10 +135,8 @@ function renderNavButtons() {
     if (currentSection > 0) {
 
         const prevBtn = document.createElement("button");
-
         prevBtn.type = "button";
         prevBtn.innerText = "Previous";
-
         prevBtn.onclick = () => {
             saveSectionResponses();
             currentSection--;
@@ -153,25 +147,18 @@ function renderNavButtons() {
     }
 
     const nextBtn = document.createElement("button");
-
     nextBtn.type = "button";
     nextBtn.innerText = currentSection < sections.length - 1 ? "Next" : "Submit";
-
     nextBtn.onclick = () => {
-
         if (!validateSection()) return;
 
         saveSectionResponses();
 
         if (currentSection < sections.length - 1) {
-
             currentSection++;
             renderSection(currentSection);
-
         } else {
-
             submitSurvey();
-
         }
     };
 
@@ -201,7 +188,7 @@ function saveSectionResponses() {
 
     const formData = new FormData(document.getElementById("surveyForm"));
 
-    formData.forEach((v,k) => {
+    formData.forEach((v, k) => {
         sectionResponses[currentSection][k] = v;
     });
 }
@@ -210,22 +197,16 @@ function saveSectionResponses() {
 async function submitSurvey() {
 
     const finalEntry = Object.assign({}, ...sectionResponses);
-
     finalEntry.timestamp = new Date().toISOString();
     finalEntry.id = Date.now();
 
     offlineResponses.push(finalEntry);
-
-    localStorage.setItem(
-        "offlineSurveyData",
-        JSON.stringify(offlineResponses)
-    );
+    localStorage.setItem("offlineSurveyData", JSON.stringify(offlineResponses));
 
     try {
-
         const res = await fetch(API_URL, {
             method: "POST",
-            headers: {"Content-Type":"application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(finalEntry)
         });
 
@@ -234,17 +215,21 @@ async function submitSurvey() {
         alert("Survey submitted successfully ✅");
 
     } catch {
-
         alert("Survey saved offline 📱");
-
     }
 
     sectionResponses = sections.map(() => ({}));
     currentSection = 0;
 
     document.getElementById("surveyForm").reset();
-
     renderSection(currentSection);
+}
+
+// ---- Progress Bar ----
+function updateProgressBar() {
+    const progress = ((currentSection + 1) / sections.length) * 100;
+    const bar = document.getElementById("progressBar");
+    if (bar) bar.style.width = progress + "%";
 }
 
 // ---- Start ----
