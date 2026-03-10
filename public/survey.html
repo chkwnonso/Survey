@@ -22,289 +22,194 @@ canvas { max-width:100%; }
 <h2>AI Research Survey</h2>
 
 <form id="surveyForm">
-
-<div id="questions"></div>
-
-<button type="submit">Submit</button>
-
+  <div id="questions"></div>
+  <button type="submit">Submit</button>
 </form>
 
 <div class="button-group">
-<button id="downloadJSON">Download JSON</button>
-<button id="downloadCSV">Download CSV</button>
-<button id="showCharts">Show Charts</button>
+  <button id="downloadJSON">Download JSON</button>
+  <button id="downloadCSV">Download CSV</button>
+  <button id="showCharts">Show Charts</button>
 </div>
 
 <div id="charts">
-<canvas id="importanceChart"></canvas>
+  <canvas id="importanceChart"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="survey.js"></script>
 
 <script>
+// ---------------------------
+// Load Questions Dynamically
+// ---------------------------
+async function loadQuestions() {
+    try {
+        const res = await fetch("/questions.json");
+        const questions = await res.json();
+        const container = document.getElementById("questions");
 
-// -------- Load Questions Dynamically --------
+        questions.forEach((q, i) => {
+            const div = document.createElement("div");
+            div.className = "question";
 
-async function loadQuestions(){
+            const label = document.createElement("label");
+            label.innerText = (i + 1) + ". " + (q.question || q.label || "");
+            div.appendChild(label);
 
-const res = await fetch("/questions.json")
-const questions = await res.json()
+            // Text input
+            if (q.type === "text" || !q.type) {
+                const input = document.createElement("input");
+                input.type = "text";
+                input.name = q.id;
+                input.placeholder = q.placeholder || "";
+                div.appendChild(input);
+            }
+            // Select input
+            else if (q.type === "select") {
+                const select = document.createElement("select");
+                select.name = q.id;
 
-const container = document.getElementById("questions")
+                const empty = document.createElement("option");
+                empty.value = "";
+                empty.innerText = "Select";
+                select.appendChild(empty);
 
-questions.forEach((q,i)=>{
+                (q.options || []).forEach(opt => {
+                    const option = document.createElement("option");
+                    option.value = opt;
+                    option.innerText = opt;
+                    select.appendChild(option);
+                });
 
-const div = document.createElement("div")
-div.className = "question"
+                div.appendChild(select);
+            }
+            // Textarea
+            else if (q.type === "textarea") {
+                const textarea = document.createElement("textarea");
+                textarea.name = q.id;
+                textarea.rows = 3;
+                textarea.placeholder = q.placeholder || "";
+                div.appendChild(textarea);
+            }
 
-const label = document.createElement("label")
-label.innerText = (i+1) + ". " + (q.question || q.label || "")
-div.appendChild(label)
+            container.appendChild(div);
+        });
 
-
-// TEXT INPUT
-if(q.type==="text" || !q.type){
-
-const input=document.createElement("input")
-input.type="text"
-input.name=q.id
-input.placeholder=q.placeholder || ""
-
-div.appendChild(input)
-
+    } catch (err) {
+        console.error("Failed to load questions.json:", err);
+        document.getElementById("questions").innerHTML = "<p style='color:red;'>Failed to load survey questions.</p>";
+    }
 }
+loadQuestions();
 
-// SELECT
-else if(q.type==="select"){
+// ---------------------------
+// Offline storage & responses
+// ---------------------------
+let responses = JSON.parse(localStorage.getItem("surveyData")) || [];
 
-const select=document.createElement("select")
-select.name=q.id
+// Scoring for importance question
+const scores = {"Very Important":5,"Important":4,"Neutral":3,"Not Important":1};
 
-const empty=document.createElement("option")
-empty.value=""
-empty.innerText="Select"
-select.appendChild(empty)
-
-(q.options || []).forEach(opt=>{
-
-const option=document.createElement("option")
-option.value=opt
-option.innerText=opt
-
-select.appendChild(option)
-
-})
-
-div.appendChild(select)
-
-}
-
-// TEXTAREA
-else if(q.type==="textarea"){
-
-const textarea=document.createElement("textarea")
-textarea.name=q.id
-textarea.rows=3
-textarea.placeholder=q.placeholder || ""
-
-div.appendChild(textarea)
-
-}
-
-container.appendChild(div)
-
-})
-
-}
-
-loadQuestions()
-
-
-// -------- Offline storage --------
-
-let responses = JSON.parse(localStorage.getItem("surveyData")) || []
-
-
-// -------- Scoring --------
-
-const scores = {"Very Important":5,"Important":4,"Neutral":3,"Not Important":1}
-
-
-// -------- Form submission --------
-
+// ---------------------------
+// Form Submission
+// ---------------------------
 document.getElementById("surveyForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const entry = {};
+    formData.forEach((value, key) => { entry[key] = value });
 
-e.preventDefault()
+    // Add score if importance is answered
+    entry.score = scores[entry.importance] || 0;
+    entry.timestamp = new Date().toISOString();
+    entry.id = Date.now();
 
-let formData = new FormData(e.target)
+    // Save offline
+    responses.push(entry);
+    localStorage.setItem("surveyData", JSON.stringify(responses));
 
-let entry = {}
+    // Send to API
+    sendToAPI(entry);
 
-formData.forEach((value,key)=>{
+    alert("Response saved offline!");
+    e.target.reset();
+});
 
-entry[key]=value
-
-})
-
-entry.score = scores[entry.importance] || 0
-entry.timestamp = new Date().toISOString()
-entry.id = Date.now()
-
-responses.push(entry)
-
-localStorage.setItem("surveyData", JSON.stringify(responses))
-
-sendToAPI(entry)
-
-alert("Response saved offline!")
-
-e.target.reset()
-
-})
-
-
-// -------- Send to API --------
-
+// ---------------------------
+// Send to Node.js API
+// ---------------------------
 function sendToAPI(entry){
-
-fetch("https://survey-2-v8nc.onrender.com/api/submit",{
-
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify(entry)
-
-})
-
-.then(r=>r.json())
-
-.then(d=>console.log("Sent to API:",d))
-
-.catch(err=>console.log("Offline, will retry later"))
-
+    fetch("https://survey-2-v8nc.onrender.com/api/submit",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(entry)
+    })
+    .then(r=>r.json())
+    .then(d=>console.log("Sent to API:",d))
+    .catch(err=>console.log("Offline, will retry later"));
 }
 
-
-// -------- Retry pending responses --------
-
+// Retry pending responses
 function sendPendingResponses(){
-
-if(navigator.onLine){
-
-responses.forEach(entry=>sendToAPI(entry))
-
-localStorage.removeItem("surveyData")
-
-responses=[]
-
+    if(navigator.onLine && responses.length>0){
+        responses.forEach(entry=>sendToAPI(entry));
+        localStorage.removeItem("surveyData");
+        responses=[];
+    }
 }
+setInterval(sendPendingResponses,5000);
+window.addEventListener("online", sendPendingResponses);
 
-}
+// ---------------------------
+// Download JSON
+// ---------------------------
+document.getElementById("downloadJSON").addEventListener("click", () => {
+    if(responses.length === 0){ alert("No responses!"); return; }
+    const blob = new Blob([JSON.stringify(responses, null, 2)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "survey_results.json";
+    a.click();
+});
 
-setInterval(sendPendingResponses,5000)
+// ---------------------------
+// Download CSV
+// ---------------------------
+document.getElementById("downloadCSV").addEventListener("click", () => {
+    if(responses.length === 0){ alert("No responses!"); return; }
+    const headers = Object.keys(responses[0]);
+    let csv = headers.join(",") + "\n";
+    responses.forEach(r => {
+        csv += headers.map(h => `"${(r[h]||"").replace(/"/g,'""')}"`).join(",") + "\n";
+    });
+    const blob = new Blob([csv], {type:"text/csv"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "survey_results.csv";
+    a.click();
+});
 
-window.addEventListener("online",sendPendingResponses)
-
-
-// -------- Download JSON --------
-
-document.getElementById("downloadJSON").addEventListener("click",()=>{
-
-if(responses.length===0){
-alert("No responses!")
-return
-}
-
-const blob=new Blob([JSON.stringify(responses,null,2)],{type:"application/json"})
-
-const a=document.createElement("a")
-
-a.href=URL.createObjectURL(blob)
-
-a.download="survey_results.json"
-
-a.click()
-
-})
-
-
-// -------- Download CSV --------
-
-document.getElementById("downloadCSV").addEventListener("click",()=>{
-
-if(responses.length===0){
-alert("No responses!")
-return
-}
-
-const headers=Object.keys(responses[0])
-
-let csv=headers.join(",")+"\n"
-
-responses.forEach(r=>{
-
-csv+=headers.map(h=>`"${(r[h]||"").replace(/"/g,'""')}"`).join(",")+"\n"
-
-})
-
-const blob=new Blob([csv],{type:"text/csv"})
-
-const a=document.createElement("a")
-
-a.href=URL.createObjectURL(blob)
-
-a.download="survey_results.csv"
-
-a.click()
-
-})
-
-
-// -------- Show Charts --------
-
-document.getElementById("showCharts").addEventListener("click",()=>{
-
-if(responses.length===0){
-alert("No responses!")
-return
-}
-
-const counts={"Very Important":0,"Important":0,"Neutral":0,"Not Important":0}
-
-responses.forEach(r=>{
-
-if(counts[r.importance]!==undefined)
-counts[r.importance]++
-
-})
-
-const ctx=document.getElementById("importanceChart").getContext("2d")
-
-if(window.importanceChart)
-window.importanceChart.destroy()
-
-window.importanceChart=new Chart(ctx,{
-
-type:'bar',
-
-data:{
-labels:Object.keys(counts),
-datasets:[{
-label:'Responses',
-data:Object.values(counts),
-backgroundColor:'rgba(54,162,235,0.6)'
-}]
-},
-
-options:{
-responsive:true,
-maintainAspectRatio:false
-}
-
-})
-
-})
-
+// ---------------------------
+// Show Charts (Importance question)
+// ---------------------------
+document.getElementById("showCharts").addEventListener("click", () => {
+    if(responses.length===0){ alert("No responses!"); return; }
+    const counts={"Very Important":0,"Important":0,"Neutral":0,"Not Important":0};
+    responses.forEach(r => {
+        if(counts[r.importance]!==undefined) counts[r.importance]++;
+    });
+    const ctx = document.getElementById("importanceChart").getContext("2d");
+    if(window.importanceChart) window.importanceChart.destroy();
+    window.importanceChart = new Chart(ctx,{
+        type:'bar',
+        data:{
+            labels:Object.keys(counts),
+            datasets:[{ label:'Responses', data:Object.values(counts), backgroundColor:'rgba(54,162,235,0.6)' }]
+        },
+        options:{ responsive:true, maintainAspectRatio:false }
+    });
+});
 </script>
 
 </body>
