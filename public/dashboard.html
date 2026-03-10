@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Research Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<h1>AI Research Dashboard</h1>
+
+<h2>Total Responses</h2>
+
+<h3 id="total">0</h3>
+
+<canvas id="chart"></canvas>
+
+<script>
+
+const API = "/api/responses"
+
+async function loadData(){
+
+const res = await fetch(API)
+
+const data = await res.json()
+
+document.getElementById("total").innerText = data.length
+
+const counts = {
+"Very Important":0,
+"Important":0,
+"Neutral":0,
+"Not Important":0
+}
+
+data.forEach(r=>{
+if(counts[r.importance] !== undefined){
+counts[r.importance]++
+}
+})
+
+const ctx = document.getElementById("chart")
+
+new Chart(ctx,{
+type:"bar",
+data:{
+labels:Object.keys(counts),
+datasets:[{
+label:"Importance of AI for Nigeria",
+data:Object.values(counts)
+}]
+}
+})
+
+}
+
+loadData()
+
+</script>
+
+</body>
+
+</html>

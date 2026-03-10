@@ -1,0 +1,19 @@
+[
+  {
+    "id":1,
+    "text":"What is your university?",
+    "type":"text"
+  },
+  {
+    "id":2,
+    "text":"Have you used AI tools?",
+    "type":"radio",
+    "options":["Yes","No"]
+  },
+  {
+    "id":3,
+    "text":"How important is AI for Nigeria?",
+    "type":"radio",
+    "options":["Very Important","Important","Neutral","Not Important"]
+  }
+]
