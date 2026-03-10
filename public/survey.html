@@ -23,7 +23,6 @@ canvas { max-width:100%; }
 
 <form id="surveyForm">
 
-<!-- QUESTIONS WILL LOAD HERE -->
 <div id="questions"></div>
 
 <button type="submit">Submit</button>
@@ -45,7 +44,8 @@ canvas { max-width:100%; }
 
 <script>
 
-// ---- Load Questions Dynamically ----
+// -------- Load Questions Dynamically --------
+
 async function loadQuestions(){
 
 const res = await fetch("/questions.json")
@@ -53,24 +53,31 @@ const questions = await res.json()
 
 const container = document.getElementById("questions")
 
-questions.forEach(q=>{
+questions.forEach((q,i)=>{
 
 const div = document.createElement("div")
 div.className = "question"
 
 const label = document.createElement("label")
-label.innerText = q.question || q.label || ""
+label.innerText = (i+1) + ". " + (q.question || q.label || "")
 div.appendChild(label)
 
-if(q.type==="text"){
+
+// TEXT INPUT
+if(q.type==="text" || !q.type){
+
 const input=document.createElement("input")
 input.type="text"
 input.name=q.id
 input.placeholder=q.placeholder || ""
+
 div.appendChild(input)
+
 }
 
-if(q.type==="select"){
+// SELECT
+else if(q.type==="select"){
+
 const select=document.createElement("select")
 select.name=q.id
 
@@ -79,22 +86,30 @@ empty.value=""
 empty.innerText="Select"
 select.appendChild(empty)
 
-q.options.forEach(opt=>{
+(q.options || []).forEach(opt=>{
+
 const option=document.createElement("option")
 option.value=opt
 option.innerText=opt
+
 select.appendChild(option)
+
 })
 
 div.appendChild(select)
+
 }
 
-if(q.type==="textarea"){
+// TEXTAREA
+else if(q.type==="textarea"){
+
 const textarea=document.createElement("textarea")
 textarea.name=q.id
 textarea.rows=3
 textarea.placeholder=q.placeholder || ""
+
 div.appendChild(textarea)
+
 }
 
 container.appendChild(div)
@@ -106,22 +121,30 @@ container.appendChild(div)
 loadQuestions()
 
 
-// ---- Offline storage ----
-let responses = JSON.parse(localStorage.getItem("surveyData")) || [];
+// -------- Offline storage --------
 
-// ---- Scoring ----
-const scores = {"Very Important":5,"Important":4,"Neutral":3,"Not Important":1};
+let responses = JSON.parse(localStorage.getItem("surveyData")) || []
 
-// ---- Form submission ----
+
+// -------- Scoring --------
+
+const scores = {"Very Important":5,"Important":4,"Neutral":3,"Not Important":1}
+
+
+// -------- Form submission --------
+
 document.getElementById("surveyForm").addEventListener("submit", e => {
 
 e.preventDefault()
 
 let formData = new FormData(e.target)
+
 let entry = {}
 
 formData.forEach((value,key)=>{
+
 entry[key]=value
+
 })
 
 entry.score = scores[entry.importance] || 0
@@ -129,30 +152,41 @@ entry.timestamp = new Date().toISOString()
 entry.id = Date.now()
 
 responses.push(entry)
+
 localStorage.setItem("surveyData", JSON.stringify(responses))
 
 sendToAPI(entry)
 
 alert("Response saved offline!")
+
 e.target.reset()
 
 })
 
-// ---- Send to Node.js API ----
+
+// -------- Send to API --------
+
 function sendToAPI(entry){
 
 fetch("https://survey-2-v8nc.onrender.com/api/submit",{
+
 method:"POST",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify(entry)
+
 })
+
 .then(r=>r.json())
+
 .then(d=>console.log("Sent to API:",d))
+
 .catch(err=>console.log("Offline, will retry later"))
 
 }
 
-// ---- Retry pending responses ----
+
+// -------- Retry pending responses --------
+
 function sendPendingResponses(){
 
 if(navigator.onLine){
@@ -172,7 +206,8 @@ setInterval(sendPendingResponses,5000)
 window.addEventListener("online",sendPendingResponses)
 
 
-// ---- Download JSON ----
+// -------- Download JSON --------
+
 document.getElementById("downloadJSON").addEventListener("click",()=>{
 
 if(responses.length===0){
@@ -193,7 +228,8 @@ a.click()
 })
 
 
-// ---- Download CSV ----
+// -------- Download CSV --------
+
 document.getElementById("downloadCSV").addEventListener("click",()=>{
 
 if(responses.length===0){
@@ -224,7 +260,8 @@ a.click()
 })
 
 
-// ---- Show Charts ----
+// -------- Show Charts --------
+
 document.getElementById("showCharts").addEventListener("click",()=>{
 
 if(responses.length===0){
@@ -235,15 +272,21 @@ return
 const counts={"Very Important":0,"Important":0,"Neutral":0,"Not Important":0}
 
 responses.forEach(r=>{
-if(counts[r.importance]!==undefined) counts[r.importance]++
+
+if(counts[r.importance]!==undefined)
+counts[r.importance]++
+
 })
 
 const ctx=document.getElementById("importanceChart").getContext("2d")
 
-if(window.importanceChart) window.importanceChart.destroy()
+if(window.importanceChart)
+window.importanceChart.destroy()
 
 window.importanceChart=new Chart(ctx,{
+
 type:'bar',
+
 data:{
 labels:Object.keys(counts),
 datasets:[{
@@ -252,7 +295,12 @@ data:Object.values(counts),
 backgroundColor:'rgba(54,162,235,0.6)'
 }]
 },
-options:{responsive:true,maintainAspectRatio:false}
+
+options:{
+responsive:true,
+maintainAspectRatio:false
+}
+
 })
 
 })

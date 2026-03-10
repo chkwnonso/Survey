@@ -24,7 +24,7 @@
 "id":"tools",
 "question":"AI tools you use",
 "type":"text",
-"placeholder":"ChatGPT, Python"
+"placeholder":"ChatGPT, Python, etc"
 },
 
 {
