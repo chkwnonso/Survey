@@ -6,12 +6,58 @@
 <title>AI Research Survey</title>
 
 <style>
-body { font-family: Arial, sans-serif; margin:0; padding:10px; max-width:480px; margin:auto; }
-h2 { text-align:center; margin-bottom:20px; }
-.question { margin-bottom:15px; }
-input, select, textarea, button { width:100%; font-size:18px; padding:12px; margin-top:8px; }
-button { border-radius:8px; background:#2196F3; color:white; border:none; cursor:pointer; }
-#navButtons { display:flex; justify-content:space-between; margin-top:20px; }
+body { 
+    font-family: Arial, sans-serif; 
+    margin: 0; 
+    padding: 10px; 
+    max-width: 480px; 
+    margin: auto; 
+}
+h2 { 
+    text-align: center; 
+    margin-bottom: 20px; 
+}
+.question { 
+    margin-bottom: 15px; 
+}
+input, select, textarea, button { 
+    width: 100%; 
+    font-size: 18px; 
+    padding: 12px; 
+    margin-top: 8px; 
+}
+button { 
+    border-radius: 8px; 
+    background: #2196F3; 
+    color: white; 
+    border: none; 
+    cursor: pointer; 
+}
+button:hover {
+    background: #1976d2;
+}
+#navButtons { 
+    display: flex; 
+    justify-content: space-between; 
+    margin-top: 20px; 
+}
+#sectionIndicator {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+#progressContainer {
+    background: #eee; 
+    border-radius: 10px; 
+    height: 20px; 
+    margin-bottom: 20px;
+}
+#progressBar {
+    background: #2196F3; 
+    height: 100%; 
+    width: 0%; 
+    border-radius: 10px;
+}
 </style>
 
 </head>
@@ -19,20 +65,17 @@ button { border-radius:8px; background:#2196F3; color:white; border:none; cursor
 
 <h2>AI Research Survey</h2>
 
-<!-- Progress Bar -->
- <div id="sectionIndicator"></div>
-<div id="progressContainer" style="background:#eee; border-radius:10px; height:20px; margin-bottom:20px;">
-  <div id="progressBar" style="background:#2196F3; height:100%; width:0%; border-radius:10px;"></div>
+<!-- Section indicator -->
+<div id="sectionIndicator">Section 1 of 1</div>
+
+<!-- Progress bar -->
+<div id="progressContainer">
+  <div id="progressBar"></div>
 </div>
 
+<!-- Survey form -->
 <form id="surveyForm">
   <div id="questions"></div>
-  <div id="navButtons"></div>
-</form>
-
-<form id="surveyForm">
-  <div id="questions"></div>
-  <!-- Navigation buttons injected here by survey.js -->
   <div id="navButtons"></div>
 </form>
 
