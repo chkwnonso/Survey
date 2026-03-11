@@ -1,75 +1,104 @@
-body{
-font-family:Arial;
-background:#0f172a;
-color:white;
-text-align:center;
-margin:0;
-padding:40px;
+body {
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: white;
+  text-align: center;
+  margin: 0;
+  padding: 40px;
 }
 
-h1{
-font-size:40px;
+h1 {
+  font-size: 40px;
 }
 
-p{
-max-width:600px;
-margin:auto;
+p {
+  max-width: 600px;
+  margin: auto;
 }
 
-#sectionIndicator{
-font-size:14px;
-opacity:0.8;
-margin-bottom:8px;
+#sectionIndicator {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 8px;
 }
 
-button{
-padding:15px 25px;
-margin:15px;
-font-size:18px;
-border:none;
-border-radius:8px;
-background:#3b82f6;
-color:white;
-cursor:pointer;
-transition:background 0.2s ease;
+button {
+  padding: 15px 25px;
+  margin: 15px;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  background-color: #3b82f6;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease; /* fixed red highlight */
 }
 
-button:hover{
-background:#2563eb;
+button:hover {
+  background-color: #2563eb;
 }
 
-footer{
-margin-top:60px;
-opacity:0.7;
-font-size:14px;
+footer {
+  margin-top: 60px;
+  opacity: 0.7;
+  font-size: 14px;
 }
 
 /* --- MGBDK Logo Section --- */
-
-.powered-by{
-text-align:center;
-margin-top:10px;
+.powered-by {
+  text-align: center;
+  margin-top: 10px;
 }
 
-.mgbdk-logo{
-width:20px;
-margin-top:6px;
-opacity:0.85;
-display:block;
-margin-left:auto;
-margin-right:auto;
-transition:transform 0.25s ease, filter 0.25s ease;
-cursor:pointer;
+.mgbdk-logo {
+  width: 20px;
+  margin-top: 6px;
+  opacity: 0.85;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: transform 0.25s ease, filter 0.25s ease;
+  cursor: pointer;
 }
 
-/* Hover effect */
-.mgbdk-logo:hover{
-transform:scale(1.2);
-filter:drop-shadow(0 0 6px #3b82f6);
+/* Hover effect with glow */
+.mgbdk-logo:hover {
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 8px #3b82f6);
+  animation: pulse 1s infinite alternate;
 }
 
-.fields{
-font-size:13px;
-opacity:0.8;
-margin-top:4px;
+/* Pulse animation for cool effect */
+@keyframes pulse {
+  0% { filter: drop-shadow(0 0 4px #3b82f6); }
+  100% { filter: drop-shadow(0 0 12px #3b82f6); }
+}
+
+.fields {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+/* ===== MOBILE NAVIGATION FIX ===== */
+
+@media (max-width:600px){
+
+  body{
+    padding:20px;
+  }
+
+  button{
+    width:100%;
+    margin:10px 0;
+    font-size:16px;
+  }
+
+  nav{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+
 }
