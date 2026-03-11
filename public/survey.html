@@ -7,33 +7,31 @@
 
 <style>
 
-/* ===== GLOBAL ===== */
-
 body{
-font-family: Arial, sans-serif;
-background:#0f172a;
-color:#f8fafc;
+font-family:Arial;
+background:#000;
+color:#f5f5f5;
 margin:0;
 padding:20px;
 max-width:480px;
 margin:auto;
 }
 
-/* ===== HEADER ===== */
+/* ===== TITLE ===== */
 
 h2{
 text-align:center;
-margin-bottom:10px;
+color:#d4af37;
 }
 
-/* ===== AI FACT ===== */
+/* ===== FACT ===== */
 
 #aiFact{
-background:#1e293b;
-padding:10px;
+background:#111;
+padding:12px;
 border-radius:8px;
 margin-bottom:20px;
-text-align:center;
+border:1px solid #d4af37;
 font-style:italic;
 }
 
@@ -41,23 +39,23 @@ font-style:italic;
 
 #sectionIndicator{
 font-weight:bold;
-margin-bottom:5px;
+margin-bottom:6px;
 text-align:center;
 }
 
 #progressContainer{
-background:#374151;
+background:#333;
 border-radius:10px;
 height:18px;
 margin-bottom:20px;
 }
 
 #progressBar{
-background:linear-gradient(90deg,#3b82f6,#60a5fa);
+background:#d4af37;
 height:100%;
 width:0%;
 border-radius:10px;
-transition:width .3s ease;
+transition:.3s;
 }
 
 /* ===== QUESTIONS ===== */
@@ -68,8 +66,8 @@ margin-bottom:15px;
 
 input,select,textarea{
 width:100%;
-font-size:16px;
 padding:12px;
+font-size:16px;
 margin-top:8px;
 border-radius:8px;
 border:none;
@@ -79,16 +77,16 @@ border:none;
 
 button{
 padding:12px;
-border-radius:8px;
 border:none;
-background:linear-gradient(45deg,#3b82f6,#60a5fa);
-color:white;
-font-size:16px;
+border-radius:8px;
+background:#d4af37;
+color:black;
+font-weight:bold;
 cursor:pointer;
 }
 
 button:hover{
-background:linear-gradient(45deg,#2563eb,#3b82f6);
+background:#f1d06b;
 }
 
 #navButtons{
@@ -107,10 +105,7 @@ opacity:.8;
 
 footer img{
 width:30px;
-display:block;
-margin:auto;
-margin-top:6px;
-opacity:.7;
+margin-top:8px;
 }
 
 </style>
@@ -120,19 +115,16 @@ opacity:.7;
 
 <h2>AI Research Survey</h2>
 
-<!-- AI Fact -->
 <div id="aiFact">
 Fun AI Fact: Artificial Intelligence can help doctors detect diseases earlier.
 </div>
 
-<!-- Progress -->
 <div id="sectionIndicator">Section 1 of 1</div>
 
 <div id="progressContainer">
 <div id="progressBar"></div>
 </div>
 
-<!-- Survey -->
 <form id="surveyForm">
 
 <div id="questions"></div>
@@ -144,7 +136,6 @@ Fun AI Fact: Artificial Intelligence can help doctors detect diseases earlier.
 <footer>
 
 <p>© 2026 Nigerian AI Research Initiative</p>
-
 <p>Powered by MGBDK</p>
 
 <img src="IMG-20251226-WA0008.jpg">
@@ -155,26 +146,19 @@ Fun AI Fact: Artificial Intelligence can help doctors detect diseases earlier.
 
 <script>
 
-/* ===== AI FACT ROTATOR ===== */
-
 const facts=[
-
-"Artificial Intelligence can help detect diseases earlier.",
-"Machine learning models improve with more data.",
-"Nigeria has one of Africa's fastest growing tech sectors.",
-"AI is used in engineering, medicine, finance and robotics.",
-"The transformer architecture powers modern AI like ChatGPT."
-
+"AI can detect diseases earlier than doctors in some cases.",
+"Machine learning improves with larger datasets.",
+"Nigeria's tech sector is one of Africa's fastest growing.",
+"AI is used in robotics, finance, medicine and engineering.",
+"Transformer models power modern AI systems."
 ];
 
 const factBox=document.getElementById("aiFact");
 
 setInterval(()=>{
-
 const fact=facts[Math.floor(Math.random()*facts.length)];
-
 factBox.innerText="Fun AI Fact: "+fact;
-
 },8000);
 
 </script>
