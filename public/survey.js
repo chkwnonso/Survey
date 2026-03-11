@@ -34,12 +34,53 @@ async function loadQuestions() {
 
         sectionResponses = sections.map(() => ({}));
 
+        // Create progress bar & section indicator if not in HTML
+        setupProgressUI();
+
         renderSection(currentSection);
 
     } catch (err) {
         console.error("Failed to load questions:", err);
         document.getElementById("questions").innerHTML =
             "<p style='color:red;'>Failed to load survey questions.</p>";
+    }
+}
+
+// ---- Setup progress UI ----
+function setupProgressUI() {
+    const surveyForm = document.getElementById("surveyForm");
+
+    // Progress container
+    let progressContainer = document.getElementById("progressContainer");
+    if (!progressContainer) {
+        progressContainer = document.createElement("div");
+        progressContainer.id = "progressContainer";
+        progressContainer.style.marginBottom = "20px";
+        surveyForm.prepend(progressContainer);
+
+        // Section indicator
+        const indicator = document.createElement("div");
+        indicator.id = "sectionIndicator";
+        indicator.style.marginBottom = "6px";
+        indicator.style.fontWeight = "bold";
+        progressContainer.appendChild(indicator);
+
+        // Progress bar background
+        const barBg = document.createElement("div");
+        barBg.style.width = "100%";
+        barBg.style.height = "12px";
+        barBg.style.background = "#ccc";
+        barBg.style.borderRadius = "6px";
+        progressContainer.appendChild(barBg);
+
+        // Progress bar itself
+        const bar = document.createElement("div");
+        bar.id = "progressBar";
+        bar.style.height = "12px";
+        bar.style.width = "0%";
+        bar.style.background = "#3b82f6";
+        bar.style.borderRadius = "6px";
+        barBg.appendChild(bar);
     }
 }
 
@@ -75,7 +116,6 @@ function renderSection(index) {
             input.name = q.id;
             input.value = value;
             if (q.required) input.required = true;
-
             div.appendChild(input);
 
         } else if (q.type === "textarea") {
@@ -85,7 +125,6 @@ function renderSection(index) {
             textarea.rows = 3;
             textarea.value = value;
             if (q.required) textarea.required = true;
-
             div.appendChild(textarea);
 
         } else if (q.type === "select") {
@@ -114,6 +153,12 @@ function renderSection(index) {
     });
 
     renderNavButtons();
+
+    // ---- Update section indicator ----
+    const indicator = document.getElementById("sectionIndicator");
+    if (indicator && sections.length > 0) {
+        indicator.innerText = `Section ${currentSection + 1} of ${sections.length}`;
+    }
 
     // ---- Update progress bar ----
     updateProgressBar();
@@ -150,6 +195,7 @@ function renderNavButtons() {
     nextBtn.type = "button";
     nextBtn.innerText = currentSection < sections.length - 1 ? "Next" : "Submit";
     nextBtn.onclick = () => {
+
         if (!validateSection()) return;
 
         saveSectionResponses();
@@ -223,12 +269,6 @@ async function submitSurvey() {
 
     document.getElementById("surveyForm").reset();
     renderSection(currentSection);
-}
-
-// ---- Update section indicator ----
-const indicator = document.getElementById("sectionIndicator");
-if(indicator&& sections.length > 0){
-    indicator.innerText = `Section ${currentSection + 1} of ${sections.length}`;
 }
 
 // ---- Progress Bar ----
