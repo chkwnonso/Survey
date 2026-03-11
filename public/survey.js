@@ -227,7 +227,7 @@ async function submitSurvey() {
 
 // ---- Update section indicator ----
 const indicator = document.getElementById("sectionIndicator");
-if(indicator){
+if(indicator&& sections.length > 0){
     indicator.innerText = `Section ${currentSection + 1} of ${sections.length}`;
 }
 
