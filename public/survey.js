@@ -225,6 +225,12 @@ async function submitSurvey() {
     renderSection(currentSection);
 }
 
+// ---- Update section indicator ----
+const indicator = document.getElementById("sectionIndicator");
+if(indicator){
+    indicator.innerText = `Section ${currentSection + 1} of ${sections.length}`;
+}
+
 // ---- Progress Bar ----
 function updateProgressBar() {
     const progress = ((currentSection + 1) / sections.length) * 100;
