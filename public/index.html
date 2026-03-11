@@ -28,6 +28,8 @@ header h1 {
   font-size: 28px;
 }
 
+/* ===== Desktop Navigation ===== */
+
 nav {
   margin-top: 10px;
 }
@@ -43,6 +45,27 @@ nav a {
 }
 
 nav a:hover { background: linear-gradient(45deg, #2563eb, #3b82f6); }
+
+/* ===== Hamburger Menu ===== */
+
+.menu-toggle{
+display:none;
+font-size:28px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.nav-buttons{
+display:none;
+flex-direction:column;
+align-items:center;
+gap:10px;
+margin-top:10px;
+}
+
+.nav-buttons button{
+width:80%;
+}
 
 /* ===== Hero Section ===== */
 #hero {
@@ -119,31 +142,6 @@ footer img {
   opacity: 0.7;
 }
 
-/* ===== Survey Section ===== */
-#surveySection {
-  padding: 20px;
-}
-
-#sectionIndicator {
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-#progressContainer {
-  background: #374151;
-  border-radius: 10px;
-  height: 20px;
-  margin-bottom: 20px;
-}
-
-#progressBar {
-  background: linear-gradient(90deg, #3b82f6, #60a5fa);
-  height: 100%;
-  width: 0%;
-  border-radius: 10px;
-  transition: width 0.3s ease;
-}
-
 /* ===== Buttons ===== */
 button {
   padding: 12px;
@@ -156,42 +154,76 @@ button {
 }
 
 button:hover { background: linear-gradient(45deg, #2563eb, #3b82f6); }
+
+/* ===== MOBILE FIX ===== */
+
+@media (max-width:600px){
+
+nav{
+display:none;
+}
+
+.menu-toggle{
+display:block;
+}
+
+.nav-buttons.show{
+display:flex;
+}
+
+}
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>Nigerian AI & STEM Hub</h1>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="survey.html">Survey</a>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="articles.html">Articles</a>
-  </nav>
+
+<h1>Nigerian AI & STEM Hub</h1>
+
+<!-- Hamburger icon -->
+<div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="survey.html">Survey</a>
+<a href="dashboard.html">Dashboard</a>
+<a href="articles.html">Articles</a>
+</nav>
+
+<!-- Mobile menu buttons -->
+<div class="nav-buttons" id="navMenu">
+<button onclick="location.href='survey.html'">Survey</button>
+<button onclick="location.href='articles.html'">Articles</button>
+<button onclick="location.href='dashboard.html'">Dashboard</button>
+<button onclick="location.href='index.html'">Home</button>
+</div>
+
 </header>
 
 <section id="hero">
-  <h2>Explore AI, Engineering, Medical, and Software Science in Nigeria!</h2>
-  <button onclick="window.location.href='survey.html'">Take the Survey</button>
-  <button onclick="window.location.href='articles.html'">Read Articles</button>
+<h2>Explore AI, Engineering, Medical, and Software Science in Nigeria!</h2>
+<button onclick="window.location.href='survey.html'">Take the Survey</button>
+<button onclick="window.location.href='articles.html'">Read Articles</button>
 </section>
 
 <div id="aiFact">Fun AI Fact: The first AI program was written in 1951.</div>
 
 <section id="articles">
-  <div class="article-card">
-    <h3>Engineering Innovations</h3>
-    <p>Discover how Nigerian engineers are building AI-powered devices and infrastructure.</p>
-  </div>
-  <div class="article-card">
-    <h3>Medical AI</h3>
-    <p>Learn how AI is helping doctors improve healthcare and diagnostics in Nigeria.</p>
-  </div>
-  <div class="article-card">
-    <h3>Software & Coding</h3>
-    <p>Explore AI applications in software development, coding competitions, and open-source projects.</p>
-  </div>
+<div class="article-card">
+<h3>Engineering Innovations</h3>
+<p>Discover how Nigerian engineers are building AI-powered devices and infrastructure.</p>
+</div>
+
+<div class="article-card">
+<h3>Medical AI</h3>
+<p>Learn how AI is helping doctors improve healthcare and diagnostics in Nigeria.</p>
+</div>
+
+<div class="article-card">
+<h3>Software & Coding</h3>
+<p>Explore AI applications in software development, coding competitions, and open-source projects.</p>
+</div>
 </section>
 
 <footer>
@@ -205,22 +237,32 @@ Engineering • Biomedical • Robotics • Data Science • Physics Research
 <a href="index.html">
 <img src="IMG-20251226-WA0008.jpg" alt="MGBDK Logo" class="mgbdk-logo"/>
 </a>
+
 </footer>
+
 <script>
+// Mobile Menu Toggle
+function toggleMenu(){
+const menu = document.getElementById("navMenu");
+menu.classList.toggle("show");
+}
+
 // AI Fact Rotator
 const facts = [
-  "The first AI program was written in 1951.",
-  "AI can compose music, write code, and play games!",
-  "Machine learning models need lots of data to learn.",
-  "Nigeria has a growing AI research community.",
-  "AI can help in medical diagnostics and drug discovery."
+"The first AI program was written in 1951.",
+"AI can compose music, write code, and play games!",
+"Machine learning models need lots of data to learn.",
+"Nigeria has a growing AI research community.",
+"AI can help in medical diagnostics and drug discovery."
 ];
 
 const factEl = document.getElementById("aiFact");
+
 setInterval(() => {
-  const fact = facts[Math.floor(Math.random() * facts.length)];
-  factEl.innerText = "Fun AI Fact: " + fact;
+const fact = facts[Math.floor(Math.random() * facts.length)];
+factEl.innerText = "Fun AI Fact: " + fact;
 }, 8000);
+
 </script>
 
 </body>

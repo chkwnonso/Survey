@@ -1,14 +1,19 @@
+/* ===== GLOBAL ===== */
+
 body {
   font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: white;
+  background: #000000; /* black background */
+  color: #f5f5f5;
   text-align: center;
   margin: 0;
   padding: 40px;
 }
 
+/* ===== TEXT ===== */
+
 h1 {
   font-size: 40px;
+  color: #d4af37; /* gold */
 }
 
 p {
@@ -22,83 +27,163 @@ p {
   margin-bottom: 8px;
 }
 
+/* ===== BUTTONS (BLACK + GOLD) ===== */
+
 button {
   padding: 15px 25px;
   margin: 15px;
   font-size: 18px;
   border: none;
   border-radius: 8px;
-  background-color: #3b82f6;
-  color: white;
+
+  background: linear-gradient(45deg,#b8962e,#d4af37,#f1d06b);
+  color: black;
+  font-weight: bold;
+
   cursor: pointer;
-  transition: background-color 0.2s ease; /* fixed red highlight */
+  transition: all 0.25s ease;
 }
 
 button:hover {
-  background-color: #2563eb;
+
+  background: linear-gradient(45deg,#f1d06b,#d4af37,#b8962e);
+
+  transform: translateY(-2px) scale(1.03);
+
+  box-shadow: 0 0 10px #d4af37;
 }
 
-footer {
-  margin-top: 60px;
-  opacity: 0.7;
-  font-size: 14px;
+/* ===== NAVIGATION ===== */
+
+nav {
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
-/* --- MGBDK Logo Section --- */
-.powered-by {
-  text-align: center;
-  margin-top: 10px;
+nav a {
+  padding:10px 16px;
+  border-radius:8px;
+
+  background: linear-gradient(45deg,#b8962e,#d4af37);
+  color:black;
+  font-weight:bold;
+
+  transition:all 0.25s ease;
 }
 
-.mgbdk-logo {
-  width: 20px;
-  margin-top: 6px;
-  opacity: 0.85;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  transition: transform 0.25s ease, filter 0.25s ease;
-  cursor: pointer;
+nav a:hover{
+  box-shadow:0 0 8px #d4af37;
 }
 
-/* Hover effect with glow */
-.mgbdk-logo:hover {
-  transform: scale(1.2);
-  filter: drop-shadow(0 0 8px #3b82f6);
-  animation: pulse 1s infinite alternate;
+/* ===== HAMBURGER MENU ===== */
+
+.menu-toggle{
+  display:none;
+  font-size:28px;
+  cursor:pointer;
+  margin-bottom:10px;
+  color:#d4af37;
 }
 
-/* Pulse animation for cool effect */
-@keyframes pulse {
-  0% { filter: drop-shadow(0 0 4px #3b82f6); }
-  100% { filter: drop-shadow(0 0 12px #3b82f6); }
+/* ===== MOBILE MENU BUTTONS ===== */
+
+.nav-buttons{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
-.fields {
-  font-size: 13px;
-  opacity: 0.8;
-  margin-top: 4px;
+/* ===== FOOTER ===== */
+
+footer{
+  margin-top:60px;
+  opacity:0.8;
+  font-size:14px;
 }
 
-/* ===== MOBILE NAVIGATION FIX ===== */
+.powered-by{
+  text-align:center;
+  margin-top:10px;
+}
+
+/* ===== MGBDK LOGO ===== */
+
+.mgbdk-logo{
+  width:22px;
+  margin-top:6px;
+  opacity:0.9;
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+
+  transition:transform 0.25s ease, filter 0.25s ease;
+  cursor:pointer;
+}
+
+/* Glow Hover */
+
+.mgbdk-logo:hover{
+  transform:scale(1.25);
+
+  filter:drop-shadow(0 0 10px #d4af37);
+
+  animation:pulse 1s infinite alternate;
+}
+
+/* Glow animation */
+
+@keyframes pulse{
+  0%{filter:drop-shadow(0 0 4px #d4af37);}
+  100%{filter:drop-shadow(0 0 14px #f1d06b);}
+}
+
+.fields{
+  font-size:13px;
+  opacity:0.8;
+  margin-top:4px;
+}
+
+/* ===== MOBILE FIX ===== */
 
 @media (max-width:600px){
 
-  body{
-    padding:20px;
-  }
+body{
+  padding:20px;
+}
 
-  button{
-    width:100%;
-    margin:10px 0;
-    font-size:16px;
-  }
+/* hide desktop nav */
 
-  nav{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:10px;
-  }
+nav{
+  display:none;
+}
+
+/* show hamburger */
+
+.menu-toggle{
+  display:block;
+}
+
+/* hide menu until opened */
+
+.nav-buttons{
+  display:none;
+  flex-direction:column;
+  align-items:center;
+}
+
+.nav-buttons.show{
+  display:flex;
+}
+
+/* mobile buttons */
+
+button{
+  width:90%;
+  margin:8px 0;
+  font-size:16px;
+}
 
 }
