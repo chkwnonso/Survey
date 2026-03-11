@@ -6,80 +6,178 @@
 <title>AI Research Survey</title>
 
 <style>
-body { 
-    font-family: Arial, sans-serif; 
-    margin: 0; 
-    padding: 10px; 
-    max-width: 480px; 
-    margin: auto; 
-}
-h2 { 
-    text-align: center; 
-    margin-bottom: 20px; 
-}
-.question { 
-    margin-bottom: 15px; 
-}
-input, select, textarea, button { 
-    width: 100%; 
-    font-size: 18px; 
-    padding: 12px; 
-    margin-top: 8px; 
-}
-button { 
-    border-radius: 8px; 
-    background: #2196F3; 
-    color: white; 
-    border: none; 
-    cursor: pointer; 
-}
-button:hover {
-    background: #1976d2;
-}
-#navButtons { 
-    display: flex; 
-    justify-content: space-between; 
-    margin-top: 20px; 
-}
-#sectionIndicator {
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 6px;
-}
-#progressContainer {
-    background: #eee; 
-    border-radius: 10px; 
-    height: 20px; 
-    margin-bottom: 20px;
-}
-#progressBar {
-    background: #2196F3; 
-    height: 100%; 
-    width: 0%; 
-    border-radius: 10px;
-}
-</style>
 
+/* ===== GLOBAL ===== */
+
+body{
+font-family: Arial, sans-serif;
+background:#0f172a;
+color:#f8fafc;
+margin:0;
+padding:20px;
+max-width:480px;
+margin:auto;
+}
+
+/* ===== HEADER ===== */
+
+h2{
+text-align:center;
+margin-bottom:10px;
+}
+
+/* ===== AI FACT ===== */
+
+#aiFact{
+background:#1e293b;
+padding:10px;
+border-radius:8px;
+margin-bottom:20px;
+text-align:center;
+font-style:italic;
+}
+
+/* ===== PROGRESS ===== */
+
+#sectionIndicator{
+font-weight:bold;
+margin-bottom:5px;
+text-align:center;
+}
+
+#progressContainer{
+background:#374151;
+border-radius:10px;
+height:18px;
+margin-bottom:20px;
+}
+
+#progressBar{
+background:linear-gradient(90deg,#3b82f6,#60a5fa);
+height:100%;
+width:0%;
+border-radius:10px;
+transition:width .3s ease;
+}
+
+/* ===== QUESTIONS ===== */
+
+.question{
+margin-bottom:15px;
+}
+
+input,select,textarea{
+width:100%;
+font-size:16px;
+padding:12px;
+margin-top:8px;
+border-radius:8px;
+border:none;
+}
+
+/* ===== BUTTONS ===== */
+
+button{
+padding:12px;
+border-radius:8px;
+border:none;
+background:linear-gradient(45deg,#3b82f6,#60a5fa);
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:linear-gradient(45deg,#2563eb,#3b82f6);
+}
+
+#navButtons{
+display:flex;
+justify-content:space-between;
+margin-top:20px;
+}
+
+/* ===== FOOTER ===== */
+
+footer{
+margin-top:50px;
+text-align:center;
+opacity:.8;
+}
+
+footer img{
+width:30px;
+display:block;
+margin:auto;
+margin-top:6px;
+opacity:.7;
+}
+
+</style>
 </head>
+
 <body>
 
 <h2>AI Research Survey</h2>
 
-<!-- Section indicator -->
-<div id="sectionIndicator">Section 1 of 1</div>
-
-<!-- Progress bar -->
-<div id="progressContainer">
-  <div id="progressBar"></div>
+<!-- AI Fact -->
+<div id="aiFact">
+Fun AI Fact: Artificial Intelligence can help doctors detect diseases earlier.
 </div>
 
-<!-- Survey form -->
+<!-- Progress -->
+<div id="sectionIndicator">Section 1 of 1</div>
+
+<div id="progressContainer">
+<div id="progressBar"></div>
+</div>
+
+<!-- Survey -->
 <form id="surveyForm">
-  <div id="questions"></div>
-  <div id="navButtons"></div>
+
+<div id="questions"></div>
+
+<div id="navButtons"></div>
+
 </form>
 
+<footer>
+
+<p>© 2026 Nigerian AI Research Initiative</p>
+
+<p>Powered by MGBDK</p>
+
+<img src="IMG-20251226-WA0008.jpg">
+
+</footer>
+
 <script src="survey.js"></script>
+
+<script>
+
+/* ===== AI FACT ROTATOR ===== */
+
+const facts=[
+
+"Artificial Intelligence can help detect diseases earlier.",
+"Machine learning models improve with more data.",
+"Nigeria has one of Africa's fastest growing tech sectors.",
+"AI is used in engineering, medicine, finance and robotics.",
+"The transformer architecture powers modern AI like ChatGPT."
+
+];
+
+const factBox=document.getElementById("aiFact");
+
+setInterval(()=>{
+
+const fact=facts[Math.floor(Math.random()*facts.length)];
+
+factBox.innerText="Fun AI Fact: "+fact;
+
+},8000);
+
+</script>
 
 </body>
 </html>
