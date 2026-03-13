@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Nigerian AI & STEM Hub</title>
 
 <style>
@@ -73,7 +75,7 @@ width:80%;
 margin:auto;
 }
 
-/* ===== HERO SECTION ===== */
+/* ===== HERO ===== */
 
 #heroLanding{
 padding:50px 20px;
@@ -89,12 +91,29 @@ animation:glow 2s ease-in-out infinite alternate;
 .hero-sub{
 max-width:600px;
 margin:auto;
-opacity:.8;
+opacity:.85;
 font-size:18px;
 margin-top:10px;
 }
 
-/* ===== STATS PANEL ===== */
+/* ===== BUTTONS ===== */
+
+button{
+padding:12px 24px;
+border:none;
+border-radius:8px;
+background:#d4af37;
+color:black;
+font-weight:bold;
+cursor:pointer;
+margin:10px;
+}
+
+button:hover{
+background:#f1d06b;
+}
+
+/* ===== STATS ===== */
 
 .stats{
 display:flex;
@@ -104,16 +123,20 @@ margin-top:30px;
 flex-wrap:wrap;
 }
 
+.stat{
+background:#111;
+padding:20px;
+border-radius:10px;
+border:1px solid #333;
+min-width:150px;
+}
+
 .stat h2{
 margin:0;
 color:#FFD700;
 }
 
-.stat p{
-margin:5px 0;
-}
-
-/* ===== PUBLICATION CARDS ===== */
+/* ===== RESEARCH GRID ===== */
 
 .research-grid{
 display:grid;
@@ -134,7 +157,7 @@ transition:.3s;
 
 .research-card:hover{
 border:1px solid #d4af37;
-transform:translateY(-4px);
+transform:translateY(-5px);
 }
 
 /* ===== AI FACT ===== */
@@ -149,22 +172,6 @@ margin:30px auto;
 font-style:italic;
 }
 
-/* ===== BUTTONS ===== */
-
-button{
-padding:12px 24px;
-border:none;
-border-radius:8px;
-background:#d4af37;
-color:black;
-font-weight:bold;
-cursor:pointer;
-}
-
-button:hover{
-background:#f1d06b;
-}
-
 /* ===== FOOTER ===== */
 
 footer{
@@ -177,18 +184,19 @@ border-top:1px solid #d4af37;
 width:35px;
 margin-top:10px;
 transition:.3s;
+cursor:pointer;
 }
 
 .mgbdk-logo:hover{
 transform:scale(1.2);
-filter:drop-shadow(0 0 10px #d4af37);
+filter:drop-shadow(0 0 10px #FFD700);
 }
 
 /* ===== GLOW ANIMATION ===== */
 
 @keyframes glow{
 0%{text-shadow:0 0 5px #FFD700,0 0 10px #FFD700;}
-100%{text-shadow:0 0 15px #FFD700,0 0 25px #FFD700;}
+100%{text-shadow:0 0 15px #FFD700,0 0 30px #FFD700;}
 }
 
 /* ===== MOBILE ===== */
@@ -205,6 +213,11 @@ display:block;
 
 .nav-buttons.show{
 display:flex;
+}
+
+.stats{
+flex-direction:column;
+align-items:center;
 }
 
 }
@@ -236,7 +249,7 @@ display:flex;
 
 </header>
 
-<!-- HERO / LANDING -->
+<!-- HERO SECTION -->
 
 <section id="heroLanding">
 
@@ -245,33 +258,36 @@ African STEM & AI Research Initiative
 </h1>
 
 <p class="hero-sub">
-Advancing Artificial Intelligence, Engineering, Biomedical Science and Robotics research in Africa.
+Advancing Artificial Intelligence, Engineering, Biomedical Science, Robotics and Data Science research in Africa.
 </p>
 
-<br>
+<button onclick="location.href='survey.html'">
+Take Research Survey
+</button>
 
-<button onclick="location.href='survey.html'">Take Research Survey</button>
-<button onclick="location.href='articles.html'">Read Research Articles</button>
+<button onclick="location.href='articles.html'">
+Read Research Articles
+</button>
 
 </section>
 
-<!-- STATS -->
+<!-- LIVE RESEARCH STATS -->
 
 <div class="stats">
 
 <div class="stat">
-<h2>245</h2>
+<h2 id="participants">0</h2>
 <p>Survey Participants</p>
 </div>
 
 <div class="stat">
-<h2>32</h2>
-<p>Research Publications</p>
+<h2>5</h2>
+<p>Research Fields</p>
 </div>
 
 <div class="stat">
-<h2>15</h2>
-<p>Research Fields</p>
+<h2>2026</h2>
+<p>Research Initiative</p>
 </div>
 
 </div>
@@ -282,22 +298,22 @@ Advancing Artificial Intelligence, Engineering, Biomedical Science and Robotics 
 
 <div class="research-card">
 <h3>AI Robotics</h3>
-<p>Developing intelligent robotic systems for automation and engineering applications.</p>
+<p>Developing intelligent robotic systems for engineering and automation.</p>
 </div>
 
 <div class="research-card">
 <h3>Biomedical Engineering</h3>
-<p>Applying AI and engineering to improve diagnostics and healthcare systems.</p>
+<p>Applying AI to healthcare diagnostics and medical technologies.</p>
 </div>
 
 <div class="research-card">
 <h3>Data Science</h3>
-<p>Leveraging data and machine learning to drive scientific discovery.</p>
+<p>Leveraging machine learning and analytics for research insights.</p>
 </div>
 
 <div class="research-card">
-<h3>Physics & Simulation</h3>
-<p>Using computational methods to model complex physical systems.</p>
+<h3>Physics Simulation</h3>
+<p>Using computational models to study complex physical systems.</p>
 </div>
 
 </section>
@@ -333,18 +349,43 @@ menu.classList.toggle("show");
 
 const facts=[
 "The first AI program was written in 1951.",
-"Machine learning models improve with large datasets.",
-"AI is revolutionizing medicine and engineering.",
-"Nigeria has a fast growing AI ecosystem.",
-"Transformers power modern AI systems like ChatGPT."
+"Machine learning improves with large datasets.",
+"AI is transforming medicine and engineering.",
+"Nigeria has a rapidly growing tech ecosystem.",
+"Transformer models power modern AI systems."
 ];
 
 const factEl=document.getElementById("aiFact");
 
 setInterval(()=>{
+
 const fact=facts[Math.floor(Math.random()*facts.length)];
+
 factEl.innerText="Fun AI Fact: "+fact;
+
 },8000);
+
+/* LIVE PARTICIPANT COUNTER */
+
+async function loadParticipants(){
+
+try{
+
+const res=await fetch("/api/responses");
+
+const data=await res.json();
+
+document.getElementById("participants").innerText=data.length;
+
+}catch{
+
+document.getElementById("participants").innerText="--";
+
+}
+
+}
+
+loadParticipants();
 
 </script>
 
