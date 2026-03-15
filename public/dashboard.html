@@ -1,171 +1,289 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Research Dashboard</title>
+
+<title>AI Research Analytics Dashboard</title>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="style.css">
-<!-- Optional: Leaflet for Nigeria map -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+
+/* ===== GLOBAL ===== */
+
+body{
+font-family:Arial,sans-serif;
+background:#000;
+color:#f5f5f5;
+margin:0;
+padding:20px;
+text-align:center;
+}
+
+h1{
+color:#d4af37;
+margin-bottom:30px;
+}
+
+/* ===== STAT CARDS ===== */
+
+.stat-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+max-width:900px;
+margin:auto;
+margin-bottom:40px;
+}
+
+.stat-card{
+background:#111;
+border:1px solid #333;
+padding:20px;
+border-radius:10px;
+}
+
+.stat-card h3{
+margin:0;
+color:#d4af37;
+font-size:16px;
+}
+
+.stat-card p{
+font-size:28px;
+margin-top:10px;
+}
+
+/* ===== CHART GRID ===== */
+
+.dashboard-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:30px;
+max-width:1000px;
+margin:auto;
+}
+
+/* ===== CHART CARDS ===== */
+
+.chart-card{
+background:#111;
+padding:20px;
+border-radius:10px;
+border:1px solid #333;
+}
+
+.chart-card h3{
+margin-top:0;
+color:#d4af37;
+}
+
+canvas{
+max-width:100%;
+}
+
+/* ===== FOOTER ===== */
+
+footer{
+margin-top:40px;
+padding-top:20px;
+border-top:1px solid #d4af37;
+}
+
+footer img{
+width:35px;
+margin-top:8px;
+}
+
+</style>
+
 </head>
 
 <body>
 
-<h1>AI Research Dashboard</h1>
+<h1>AI Research Analytics Dashboard</h1>
 
-<h2>Total Responses</h2>
-<h3 id="total">0</h3>
+<!-- ===== STAT CARDS ===== -->
 
-<!-- Original single chart -->
-<canvas id="chart"></canvas>
+<div class="stat-grid">
 
-<!-- Container for automatic charts -->
-<div id="charts"></div>
+<div class="stat-card">
+<h3>Total Participants</h3>
+<p id="totalParticipants">0</p>
+</div>
 
-<!-- AI Tools Pie Chart -->
-<h2>AI Tools Usage</h2>
-<canvas id="toolsChart"></canvas>
+<div class="stat-card">
+<h3>Unique Fields</h3>
+<p id="uniqueFields">0</p>
+</div>
 
-<!-- Nigeria Map -->
-<h2>Nigeria AI Adoption Map</h2>
-<div id="map" style="height:400px;"></div>
+<div class="stat-card">
+<h3>AI Awareness</h3>
+<p id="awarenessPercent">0%</p>
+</div>
 
-<!-- Research report generator -->
-<button onclick="generateReport()">Generate Research Report</button>
+<div class="stat-card">
+<h3>AI Interest</h3>
+<p id="interestPercent">0%</p>
+</div>
+
+</div>
+
+<!-- ===== CHARTS ===== -->
+
+<div class="dashboard-grid">
+
+<div class="chart-card">
+<h3>Field of Study Distribution</h3>
+<canvas id="fieldChart"></canvas>
+</div>
+
+<div class="chart-card">
+<h3>Interest in AI</h3>
+<canvas id="interestChart"></canvas>
+</div>
+
+<div class="chart-card">
+<h3>AI Awareness</h3>
+<canvas id="awarenessChart"></canvas>
+</div>
+
+</div>
+
+<footer>
+
+<p><strong>Powered by MGBDK — STEM & AI Research Initiative</strong></p>
+
+<p>
+Engineering • Biomedical • Robotics • Data Science • Physics
+</p>
+
+<img src="IMG-20251226-WA0008.jpg">
+
+</footer>
 
 <script>
-const API = "/api/responses";
 
-async function loadData(){
-    const res = await fetch(API);
-    const data = await res.json();
+async function loadAnalytics(){
 
-    // Update total responses
-    document.getElementById("total").innerText = data.length;
+const res = await fetch("/api/responses");
 
-    // --- Original chart ---
-    const counts = {
-        "Very Important":0,
-        "Important":0,
-        "Neutral":0,
-        "Not Important":0
-    };
+const data = await res.json();
 
-    data.forEach(r=>{
-        if(counts[r.importance] !== undefined){
-            counts[r.importance]++;
-        }
-    });
+/* ===== BASIC STATS ===== */
 
-    const ctx = document.getElementById("chart");
-    new Chart(ctx,{
-        type:"bar",
-        data:{
-            labels:Object.keys(counts),
-            datasets:[{
-                label:"Importance of AI for Nigeria",
-                data:Object.values(counts)
-            }]
-        }
-    });
+const total = data.length;
 
-    // --- Automatic charts for all survey questions ---
-    const chartContainer = document.getElementById("charts");
-    const keys = Object.keys(data[0] || {});
-    keys.forEach(key => {
-        if(key === "timestamp" || key === "id") return;
+document.getElementById("totalParticipants").innerText = total;
 
-        const counts = {};
-        data.forEach(r => {
-            const value = r[key];
-            if(!value) return;
-            counts[value] = (counts[value] || 0) + 1;
-        });
+/* ===== UNIQUE FIELDS ===== */
 
-        const canvas = document.createElement("canvas");
-        chartContainer.appendChild(canvas);
+const fields = new Set();
 
-        new Chart(canvas,{
-            type:"bar",
-            data:{
-                labels:Object.keys(counts),
-                datasets:[{
-                    label:key,
-                    data:Object.values(counts),
-                    backgroundColor:'rgba(54,162,235,0.6)'
-                }]
-            },
-            options:{ responsive:true, maintainAspectRatio:false }
-        });
-    });
+data.forEach(r=>{
+if(r.field) fields.add(r.field);
+});
 
-    // --- AI Tools Usage Pie Chart ---
-    const tools = {};
-    data.forEach(r=>{
-        if(!r.tools) return;
-        r.tools.split(",").forEach(t=>{
-            const tool = t.trim();
-            if(!tool) return;
-            tools[tool] = (tools[tool] || 0) + 1;
-        });
-    });
+document.getElementById("uniqueFields").innerText = fields.size;
 
-    new Chart(document.getElementById("toolsChart"),{
-        type:"pie",
-        data:{
-            labels:Object.keys(tools),
-            datasets:[{
-                data:Object.values(tools),
-                backgroundColor: [
-                    "#FF6384","#36A2EB","#FFCE56","#4BC0C0","#9966FF","#FF9F40"
-                ]
-            }]
-        }
-    });
+/* ===== AI AWARENESS ===== */
 
-    // --- Nigeria AI Adoption Map ---
-    const map = L.map('map').setView([9.0820, 8.6753], 6);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a>'
-    }).addTo(map);
+let awareCount = 0;
 
-    data.forEach(r=>{
-        if(!r.state) return;
-        // Add a marker for some states as an example
-        const positions = {
-            "Lagos":[6.5244,3.3792],
-            "Abuja":[9.0765,7.3986],
-            "Oyo":[7.3775,3.9470],
-            "Enugu":[6.4416,7.4986],
-            "Kaduna":[10.5105,7.4165]
-        };
-        if(positions[r.state]){
-            L.marker(positions[r.state]).addTo(map).bindPopup(r.state);
-        }
-    });
+data.forEach(r=>{
+if(r.ai_awareness === "Yes") awareCount++;
+});
+
+const awarenessPercent = Math.round((awareCount / total) * 100);
+
+document.getElementById("awarenessPercent").innerText = awarenessPercent + "%";
+
+/* ===== AI INTEREST ===== */
+
+let interestCount = 0;
+
+data.forEach(r=>{
+if(r.ai_interest === "Very Interested" || r.ai_interest === "Interested"){
+interestCount++;
+}
+});
+
+const interestPercent = Math.round((interestCount / total) * 100);
+
+document.getElementById("interestPercent").innerText = interestPercent + "%";
+
+/* ===== FIELD DISTRIBUTION ===== */
+
+const fieldCounts = {};
+
+data.forEach(r=>{
+const field = r.field || "Unknown";
+fieldCounts[field] = (fieldCounts[field] || 0) + 1;
+});
+
+new Chart(document.getElementById("fieldChart"),{
+
+type:"bar",
+
+data:{
+labels:Object.keys(fieldCounts),
+datasets:[{
+label:"Participants",
+data:Object.values(fieldCounts)
+}]
+}
+
+});
+
+/* ===== AI INTEREST CHART ===== */
+
+const interestCounts = {};
+
+data.forEach(r=>{
+const interest = r.ai_interest || "Unknown";
+interestCounts[interest] = (interestCounts[interest] || 0) + 1;
+});
+
+new Chart(document.getElementById("interestChart"),{
+
+type:"pie",
+
+data:{
+labels:Object.keys(interestCounts),
+datasets:[{
+data:Object.values(interestCounts)
+}]
+}
+
+});
+
+/* ===== AI AWARENESS CHART ===== */
+
+const awarenessCounts = {};
+
+data.forEach(r=>{
+const aware = r.ai_awareness || "Unknown";
+awarenessCounts[aware] = (awarenessCounts[aware] || 0) + 1;
+});
+
+new Chart(document.getElementById("awarenessChart"),{
+
+type:"doughnut",
+
+data:{
+labels:Object.keys(awarenessCounts),
+datasets:[{
+data:Object.values(awarenessCounts)
+}]
+}
+
+});
 
 }
 
-// --- Generate Research Report ---
-function generateReport(){
-    fetch(API)
-    .then(res=>res.json())
-    .then(data=>{
-        const total = data.length;
-        let report = `AI Research Nigeria Report\n====================\n\nTotal Respondents: ${total}\n\nAI Usage Trends:\n----------------\n`;
-        data.forEach(r=>{
-            report += `Field: ${r.course || r.field}\nUses AI: ${r.ai_use || "N/A"}\nImportance: ${r.importance || "N/A"}\n\n`;
-        });
-        const blob = new Blob([report], {type:"text/plain"});
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "AI_Research_Report.txt";
-        a.click();
-    });
-}
-
-loadData();
+loadAnalytics();
 
 </script>
 
