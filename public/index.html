@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ANA AI & STEM Hub</title>
+<title>ANARK Research Hub</title>
 
 <style>
 
@@ -26,12 +26,6 @@ a{ text-decoration:none; color:inherit; }
 header{
 padding:20px;
 border-bottom:1px solid #d4af37;
-}
-
-header h1{
-margin:0;
-color:#d4af37;
-font-size:28px;
 }
 
 /* ===== NAVIGATION ===== */
@@ -82,10 +76,12 @@ padding:50px 20px;
 }
 
 .hero-title{
-font-size:36px;
+font-size:42px;
 color:#FFD700;
-text-shadow:0 0 10px #FFD700,0 0 20px #FFD700;
-animation:glow 2s ease-in-out infinite alternate;
+text-shadow:
+0 0 10px #FFD700,
+0 0 20px #FFD700,
+0 0 40px rgba(212,175,55,0.6);
 }
 
 .hero-sub{
@@ -192,13 +188,6 @@ transform:scale(1.2);
 filter:drop-shadow(0 0 10px #FFD700);
 }
 
-/* ===== GLOW ANIMATION ===== */
-
-@keyframes glow{
-0%{text-shadow:0 0 5px #FFD700,0 0 10px #FFD700;}
-100%{text-shadow:0 0 15px #FFD700,0 0 30px #FFD700;}
-}
-
 /* ===== MOBILE ===== */
 
 @media(max-width:600px){
@@ -222,14 +211,98 @@ align-items:center;
 
 }
 
+/* =============================== */
+/* ===== ANARK HEADER UPGRADE ==== */
+/* =============================== */
+
+.anark-header{
+padding:50px 20px;
+border-bottom:1px solid #d4af37;
+background: radial-gradient(circle at center,#111,#000);
+position:relative;
+overflow:hidden;
+}
+
+.anark-title{
+font-size:60px;
+letter-spacing:6px;
+margin:0;
+color:#FFD700;
+
+text-shadow:
+0 0 10px #FFD700,
+0 0 25px #FFD700,
+0 0 50px rgba(212,175,55,0.7);
+
+animation:anarkGlow 3s ease-in-out infinite alternate;
+}
+
+.anark-subtitle{
+margin-top:8px;
+font-size:14px;
+opacity:0.8;
+letter-spacing:2px;
+}
+
+@keyframes anarkGlow{
+0%{
+text-shadow:
+0 0 10px #FFD700,
+0 0 20px #FFD700;
+}
+100%{
+text-shadow:
+0 0 30px #FFD700,
+0 0 60px rgba(212,175,55,0.9);
+}
+}
+
+.anark-header::before{
+content:"";
+position:absolute;
+width:200%;
+height:200%;
+
+background:
+radial-gradient(circle,#d4af3715 1px,transparent 1px);
+
+background-size:40px 40px;
+
+animation:particleMove 60s linear infinite;
+
+top:-50%;
+left:-50%;
+}
+
+@keyframes particleMove{
+0%{transform:translate(0,0);}
+100%{transform:translate(200px,200px);}
+}
+
+@media(max-width:600px){
+
+.anark-title{
+font-size:38px;
+}
+
+.anark-subtitle{
+font-size:11px;
+}
+
+}
+
 </style>
 </head>
 
 <body>
 
-<header>
+<header class="anark-header">
 
-<h1>ANA AI & STEM Hub</h1>
+<h1 class="anark-title">ANARK</h1>
+
+<p class="anark-subtitle">
+African Network for AI, Robotics & Knowledge
+</p>
 
 <div class="menu-toggle" onclick="toggleMenu()">☰</div>
 
@@ -254,11 +327,11 @@ align-items:center;
 <section id="heroLanding">
 
 <h1 class="hero-title">
-African STEM & AI Research Initiative
+Welcome to ANARK
 </h1>
 
 <p class="hero-sub">
-Advancing Artificial Intelligence, Engineering, Biomedical Science, Robotics and Data Science research in Africa.
+Powering Africa’s Future in AI, Robotics, Biomedical Science & Advanced Research.
 </p>
 
 <button onclick="location.href='survey.html'">
@@ -338,14 +411,10 @@ Engineering • Biomedical • Robotics • Data Science • Physics
 
 <script>
 
-/* MOBILE MENU */
-
 function toggleMenu(){
 const menu=document.getElementById("navMenu");
 menu.classList.toggle("show");
 }
-
-/* AI FACT ROTATOR */
 
 const facts=[
 "The first AI program was written in 1951.",
@@ -358,31 +427,18 @@ const facts=[
 const factEl=document.getElementById("aiFact");
 
 setInterval(()=>{
-
 const fact=facts[Math.floor(Math.random()*facts.length)];
-
 factEl.innerText="Fun AI Fact: "+fact;
-
 },8000);
 
-/* LIVE PARTICIPANT COUNTER */
-
 async function loadParticipants(){
-
 try{
-
 const res=await fetch("/api/responses");
-
 const data=await res.json();
-
 document.getElementById("participants").innerText=data.length;
-
 }catch{
-
 document.getElementById("participants").innerText="--";
-
 }
-
 }
 
 loadParticipants();

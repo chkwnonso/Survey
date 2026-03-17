@@ -261,3 +261,140 @@ button{
 canvas{
   max-width:100%;
 }
+
+/* ================================================= */
+/* ===== ANARK HEADER (NON-DESTRUCTIVE UPGRADE) ===== */
+/* ================================================= */
+
+/* Futuristic header container */
+
+.anark-header{
+  background: radial-gradient(circle at center,#0a0a0a,#000);
+  padding:60px 20px;
+  border-bottom:1px solid #d4af37;
+  position:relative;
+  overflow:hidden;
+}
+
+/* Main title */
+
+.anark-title{
+  font-size:64px;
+  letter-spacing:8px;
+  margin:0;
+  color:#FFD700;
+
+  text-shadow:
+  0 0 10px #FFD700,
+  0 0 30px #FFD700,
+  0 0 60px rgba(212,175,55,0.8);
+
+  animation:anarkGlow 3s ease-in-out infinite alternate;
+}
+
+/* Subtitle */
+
+.anark-subtitle{
+  margin-top:10px;
+  font-size:14px;
+  opacity:0.8;
+  letter-spacing:2px;
+}
+
+/* Glow animation */
+
+@keyframes anarkGlow{
+  0%{
+    text-shadow:
+    0 0 10px #FFD700,
+    0 0 20px #FFD700;
+  }
+  100%{
+    text-shadow:
+    0 0 40px #FFD700,
+    0 0 80px rgba(212,175,55,1);
+  }
+}
+
+/* Animated particle grid background */
+
+.anark-header::before{
+  content:"";
+  position:absolute;
+  width:200%;
+  height:200%;
+
+  background:
+  radial-gradient(circle,#d4af3715 1px,transparent 1px);
+
+  background-size:40px 40px;
+
+  animation:particleMove 80s linear infinite;
+
+  top:-50%;
+  left:-50%;
+}
+
+@keyframes particleMove{
+  0%{transform:translate(0,0);}
+  100%{transform:translate(300px,300px);}
+}
+
+/* ================================================= */
+/* ===== HERO ENHANCEMENT =========================== */
+/* ================================================= */
+
+.hero-title{
+  font-size:44px;
+  letter-spacing:1px;
+
+  text-shadow:
+  0 0 10px #FFD700,
+  0 0 25px rgba(212,175,55,0.6),
+  0 0 50px rgba(212,175,55,0.4);
+}
+
+.hero-sub{
+  font-size:18px;
+  opacity:0.85;
+}
+
+/* ================================================= */
+/* ===== PREMIUM CARD EFFECT ======================== */
+/* ================================================= */
+
+.research-card,
+.stat,
+.chart-card{
+  backdrop-filter: blur(6px);
+  background: rgba(10,10,10,0.85);
+}
+
+/* ================================================= */
+/* ===== SMOOTH PAGE FEEL =========================== */
+/* ================================================= */
+
+*{
+  scroll-behavior:smooth;
+}
+
+/* ================================================= */
+/* ===== MOBILE POLISH ============================== */
+/* ================================================= */
+
+@media (max-width:600px){
+
+.anark-title{
+  font-size:40px;
+  letter-spacing:4px;
+}
+
+.anark-subtitle{
+  font-size:11px;
+}
+
+.hero-title{
+  font-size:28px;
+}
+
+}
