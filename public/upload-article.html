@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload New Article - ANARK</title>
+  <style>
+    :root { --gold: #c9a037; --dark: #0a0a0a; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--dark) url('anark_background.jpg') center/cover fixed;
+      color: #f0f0f0; margin:0; padding:40px;
+    }
+    .container {
+      max-width: 820px; margin: 0 auto;
+      background: rgba(15,15,15,0.95); padding: 40px;
+      border: 1px solid #2a2a2a; border-radius: 16px;
+    }
+    h1 { color: var(--gold); text-align: center; }
+    label { display: block; margin: 18px 0 6px; font-weight: 600; }
+    input, select, textarea {
+      width: 100%; padding: 12px; background: #222; border: 1px solid #444;
+      border-radius: 8px; color: white; font-size: 1rem;
+    }
+    textarea { height: 320px; font-family: monospace; }
+    button {
+      margin-top: 30px; padding: 16px 40px; background: var(--gold); color: #111;
+      border: none; border-radius: 50px; font-weight: 700; font-size: 1.1rem;
+      cursor: pointer; width: 100%;
+    }
+    .note { background: #1a1a1a; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid var(--gold); }
+    .image-preview { max-width: 100%; margin-top: 10px; border-radius: 8px; display: none; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Add New Article</h1>
+
+  <div class="note">
+    <strong>Steps after clicking Download:</strong><br>
+    1. Upload the chosen image into your local <strong>images/</strong> folder<br>
+    2. Replace <strong>articles.json</strong> with the downloaded file<br>
+    3. Commit both the image + new JSON to GitHub<br>
+    4. Render will auto-deploy in ~1 minute
+  </div>
+
+  <form id="uploadForm">
+    <label>Article Title</label>
+    <input type="text" id="title" required>
+
+    <label>Category</label>
+    <select id="category" required>
+      <option value="">— Choose Category —</option>
+      <option value="AI & NLP">AI & NLP</option>
+      <option value="Robotics">Robotics</option>
+      <option value="Biomedical Engineering">Biomedical Engineering</option>
+      <option value="Ethics & Policy">Ethics & Policy</option>
+      <option value="Physics & Simulation">Physics & Simulation</option>
+    </select>
+
+    <label>Select Article Image from Computer</label>
+    <input type="file" id="imageFile" accept="image/*" required>
+    <img id="imagePreview" class="image-preview" alt="Preview">
+
+    <label>Short Excerpt</label>
+    <input type="text" id="excerpt" required>
+
+    <label>Author Full Name</label>
+    <input type="text" id="author" required>
+
+    <label>Author Title / Affiliation</label>
+    <input type="text" id="authorTitle" placeholder="e.g. Lead Researcher, University of Lagos" required>
+
+    <label>Publication Date (e.g. March 18, 2026)</label>
+    <input type="text" id="date" required>
+
+    <label>Read Time (e.g. 18 min)</label>
+    <input type="text" id="readTime" value="15 min" required>
+
+    <label><input type="checkbox" id="featured"> Make this Featured Article</label>
+
+    <label>Full Article Content (HTML)</label>
+    <textarea id="content" placeholder="<p>First paragraph here...</p><h2>Key Findings</h2><p>...</p>" required></textarea>
+
+    <button type="submit">Download Updated articles.json + Instructions</button>
+  </form>
+</div>
+
+<script>
+document.getElementById("imageFile").onchange = function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      document.getElementById("imagePreview").src = ev.target.result;
+      document.getElementById("imagePreview").style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+document.getElementById("uploadForm").onsubmit = async (e) => {
+  e.preventDefault();
+
+  const fileInput = document.getElementById("imageFile");
+  if (!fileInput.files.length) {
+    alert("Please select an image");
+    return;
+  }
+
+  const imageFile = fileInput.files[0];
+  const cleanName = imageFile.name.replace(/\s+/g, '-').toLowerCase();
+  const imagePath = `images/${cleanName}`;
+
+  let articles = [];
+  try {
+    const res = await fetch("articles.json");
+    articles = await res.json();
+  } catch (err) {
+    alert("articles.json not found in the same folder.");
+    return;
+  }
+
+  const nextId = articles.length ? Math.max(...articles.map(a => a.id)) + 1 : 1;
+
+  const newArticle = {
+    id: nextId,
+    title: document.getElementById("title").value.trim(),
+    category: document.getElementById("category").value,
+    image: imagePath,
+    excerpt: document.getElementById("excerpt").value.trim(),
+    author: document.getElementById("author").value.trim(),
+    authorTitle: document.getElementById("authorTitle").value.trim(),
+    date: document.getElementById("date").value.trim(),
+    readTime: document.getElementById("readTime").value.trim(),
+    featured: document.getElementById("featured").checked,
+    content: document.getElementById("content").value.trim()
+  };
+
+  articles.push(newArticle);
+
+  const dataStr = JSON.stringify(articles, null, 2);
+  const blob = new Blob([dataStr], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "articles.json";
+  link.click();
+
+  alert(`✅ Success!\n\nNew article added with ID: ${nextId}\nImage path: ${imagePath}\n\nNext steps:\n1. Put your image file into the "images/" folder\n2. Replace articles.json with the downloaded file\n3. Commit & push both to GitHub\n4. Render will auto-deploy your new article`);
+};
+</script>
+</body>
+</html>
