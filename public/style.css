@@ -2,11 +2,17 @@
 
 body {
   font-family: Arial, sans-serif;
-  background: #000000; /* black background */
+  /* Background with image + dark overlay for readability */
+  background: 
+    linear-gradient(rgba(10, 10, 10, 0.68), rgba(10, 10, 10, 0.68)),
+    url('anark-background.jpg') no-repeat center center fixed;
+  background-size: cover;
   color: #f5f5f5;
   text-align: center;
   margin: 0;
   padding: 40px;
+  min-height: 100vh;
+  position: relative;
 }
 
 /* ===== TEXT ===== */
@@ -45,11 +51,8 @@ button {
 }
 
 button:hover {
-
   background: linear-gradient(45deg,#f1d06b,#d4af37,#b8962e);
-
   transform: translateY(-2px) scale(1.03);
-
   box-shadow: 0 0 10px #d4af37;
 }
 
@@ -127,9 +130,7 @@ footer{
 
 .mgbdk-logo:hover{
   transform:scale(1.25);
-
   filter:drop-shadow(0 0 10px #d4af37);
-
   animation:pulse 1s infinite alternate;
 }
 
@@ -150,41 +151,37 @@ footer{
 
 @media (max-width:600px){
 
-body{
-  padding:20px;
-}
+  body{
+    padding:20px;
+  }
 
-/* hide desktop nav */
+  /* hide desktop nav */
+  nav{
+    display:none;
+  }
 
-nav{
-  display:none;
-}
+  /* show hamburger */
+  .menu-toggle{
+    display:block;
+  }
 
-/* show hamburger */
+  /* hide menu until opened */
+  .nav-buttons{
+    display:none;
+    flex-direction:column;
+    align-items:center;
+  }
 
-.menu-toggle{
-  display:block;
-}
+  .nav-buttons.show{
+    display:flex;
+  }
 
-/* hide menu until opened */
-
-.nav-buttons{
-  display:none;
-  flex-direction:column;
-  align-items:center;
-}
-
-.nav-buttons.show{
-  display:flex;
-}
-
-/* mobile buttons */
-
-button{
-  width:90%;
-  margin:8px 0;
-  font-size:16px;
-}
+  /* mobile buttons */
+  button{
+    width:90%;
+    margin:8px 0;
+    font-size:16px;
+  }
 
 }
 
@@ -384,17 +381,17 @@ canvas{
 
 @media (max-width:600px){
 
-.anark-title{
-  font-size:40px;
-  letter-spacing:4px;
-}
+  .anark-title{
+    font-size:40px;
+    letter-spacing:4px;
+  }
 
-.anark-subtitle{
-  font-size:11px;
-}
+  .anark-subtitle{
+    font-size:11px;
+  }
 
-.hero-title{
-  font-size:28px;
-}
+  .hero-title{
+    font-size:28px;
+  }
 
 }
