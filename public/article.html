@@ -12,8 +12,6 @@
       --text-primary: #f0f0f0;
       --text-secondary: #d0d0d0;
       --gold: #c9a037;
-      --gold-dark: #b8962e;
-      --gold-glow: #d4af37;
       --border-dark: #2a2a2a;
     }
 
@@ -54,7 +52,6 @@
       overflow: hidden;
     }
 
-    /* ==================== NEW: Article Header Image ==================== */
     .article-hero-image {
       width: 100%;
       height: 380px;
@@ -64,7 +61,6 @@
       border-radius: 16px 16px 0 0;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-    /* ================================================================ */
 
     .article-header {
       padding: 40px 40px 30px;
@@ -139,7 +135,7 @@
 <div class="container">
   <a href="articles.html" class="back-btn">← Back to All Articles</a>
 
-  <!-- Article Image at the top -->
+  <!-- Image at the top -->
   <div class="article-hero-image" id="articleImage"></div>
 
   <div class="article-header">
@@ -172,15 +168,18 @@ async function loadArticle() {
       return;
     }
 
+    // Fill the text content
     document.getElementById("pageTitle").textContent = article.title;
-
-    // Show the article image at the top
-    document.getElementById("articleImage").style.backgroundImage = `url('${article.image}')`;
-
     document.getElementById("category").textContent = article.category;
     document.getElementById("title").textContent = article.title;
     document.getElementById("meta").innerHTML = `By ${article.author} • ${article.date} • ${article.readTime}`;
     document.getElementById("content").innerHTML = article.content;
+
+    // Show the image - Simple and stable (no flashing)
+    const imgDiv = document.getElementById("articleImage");
+    if (article.image) {
+      imgDiv.style.backgroundImage = `url('${article.image}')`;
+    }
 
   } catch (err) {
     console.error("Failed to load article", err);

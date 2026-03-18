@@ -158,6 +158,7 @@
 
 <button class="submit-btn" onclick="showSubmitModal()">Submit Your Article</button>
 
+<!-- Submit Modal (same as before) -->
 <div class="modal" id="submitModal">
   <div class="modal-content">
     <span class="close" onclick="hideSubmitModal()">×</span>
@@ -187,25 +188,24 @@
 </footer>
 
 <script>
+// Load articles from JSON
 let allArticles = [];
 
 async function loadArticles() {
   try {
     const res = await fetch("articles.json");
     allArticles = await res.json();
-    
     renderFeatured();
     renderCategoryFilters();
     renderArticles(allArticles);
   } catch (err) {
-    console.error("Failed to load articles:", err);
+    console.error("Failed to load articles.json", err);
   }
 }
 
 function renderFeatured() {
   const featured = allArticles.find(a => a.featured);
   if (!featured) return;
-
   document.getElementById("featuredHero").innerHTML = `
     <div class="tag">Featured Research</div>
     <h1>${featured.title}</h1>
@@ -219,8 +219,9 @@ function renderCategoryFilters() {
   const categories = ["all", ...new Set(allArticles.map(a => a.category))];
   const container = document.getElementById("categoryFilters");
   container.innerHTML = categories.map(cat => `
-    <button class="filter-btn ${cat==='all' ? 'active' : ''}" 
-            data-category="${cat}" onclick="filterByCategory(this)">
+    <button class="filter-btn ${cat==='all'?'active':''}" 
+            data-category="${cat}" 
+            onclick="filterByCategory(this)">
       ${cat === 'all' ? 'All' : cat}
     </button>
   `).join('');
