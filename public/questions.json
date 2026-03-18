@@ -1,219 +1,202 @@
 [
   {
-    "id": "ai_familiarity",
-    "section": "Section A: AI Awareness & Adoption",
-    "question": "How familiar are you with AI applications in your field?",
+    "section": "Demographics",
+    "id": "age_group",
+    "question": "What is your age group?",
     "type": "select",
-    "options": ["1","2","3","4","5"],
+    "options": ["Under 18", "18-24", "25-34", "35-44", "45 and above"],
     "required": true
   },
   {
+    "section": "Demographics",
+    "id": "field_of_study",
+    "question": "What is your primary field of study or work?",
+    "type": "text",
+    "placeholder": "e.g. Computer Science, Biomedical Engineering, Physics, etc.",
+    "required": true
+  },
+
+  {
+    "section": "AI Awareness & Adoption",
+    "id": "ai_familiarity",
+    "question": "How familiar are you with AI applications in your field? (1 = Not familiar, 5 = Expert)",
+    "type": "select",
+    "options": ["1", "2", "3", "4", "5"],
+    "required": true
+  },
+  {
+    "section": "AI Awareness & Adoption",
     "id": "ai_technologies_used",
-    "section": "Section A: AI Awareness & Adoption",
     "question": "Which AI technologies have you actively used in your studies or work?",
     "type": "text",
-    "placeholder": "List all technologies",
+    "placeholder": "e.g. ChatGPT, TensorFlow, Computer Vision, NLP, etc.",
     "required": false
   },
   {
+    "section": "AI Awareness & Adoption",
     "id": "ai_productivity_perception",
-    "section": "Section A: AI Awareness & Adoption",
     "question": "How do you perceive AI's potential to improve productivity in your field?",
     "type": "textarea",
     "required": false
   },
   {
+    "section": "AI Awareness & Adoption",
     "id": "ai_adoption_barriers",
-    "section": "Section A: AI Awareness & Adoption",
-    "question": "What are the key barriers preventing wider AI adoption?",
+    "question": "What are the key barriers preventing wider AI adoption in your field or region?",
     "type": "textarea",
     "required": false
   },
   {
+    "section": "AI Awareness & Adoption",
     "id": "ai_trust_rating",
-    "section": "Section A: AI Awareness & Adoption",
-    "question": "Rate your trust in AI-driven decisions in critical sectors like healthcare or finance.",
+    "question": "Rate your trust in AI-driven decisions in critical sectors (1 = No trust, 5 = Complete trust)",
     "type": "select",
-    "options": ["1","2","3","4","5"],
+    "options": ["1", "2", "3", "4", "5"],
     "required": true
   },
   {
+    "section": "AI Awareness & Adoption",
     "id": "ai_research_priorities",
-    "section": "Section A: AI Awareness & Adoption",
-    "question": "Which emerging AI areas do you believe deserve more research investment?",
+    "question": "Which emerging AI areas deserve more research investment in Africa?",
     "type": "text",
-    "placeholder": "List areas",
+    "placeholder": "e.g. Healthcare AI, Agricultural AI, Robotics, etc.",
     "required": false
   },
+
   {
+    "section": "Research & Innovation Mindset",
     "id": "research_frequency",
-    "section": "Section B: Research & Innovation Mindset",
     "question": "How often do you engage in independent research outside your curriculum?",
     "type": "select",
-    "options": ["Never","Rarely","Sometimes","Often","Always"],
+    "options": ["Never", "Rarely", "Sometimes", "Often", "Always"],
     "required": true
   },
   {
+    "section": "Research & Innovation Mindset",
     "id": "interdisciplinary_collab",
-    "section": "Section B: Research & Innovation Mindset",
-    "question": "Have you collaborated on interdisciplinary projects combining AI and another field?",
+    "question": "Have you collaborated on interdisciplinary projects combining AI with another field?",
     "type": "select",
-    "options": ["Yes","No"],
+    "options": ["Yes", "No"],
     "required": true
   },
   {
+    "section": "Research & Innovation Mindset",
     "id": "research_motivation",
-    "section": "Section B: Research & Innovation Mindset",
-    "question": "What motivates you to pursue research—curiosity, career, societal impact, or funding?",
+    "question": "What motivates you most to pursue research?",
     "type": "text",
-    "placeholder": "Rank motivations",
+    "placeholder": "e.g. Curiosity, Career growth, Societal impact, Funding",
     "required": false
   },
   {
-    "id": "research_outputs_value",
-    "section": "Section B: Research & Innovation Mindset",
-    "question": "What kinds of research outputs do you value most: publications, patents, open-source tools, or startups?",
-    "type": "text",
-    "placeholder": "List outputs",
-    "required": false
-  },
-  {
+    "section": "Research & Innovation Mindset",
     "id": "research_infra_gaps",
-    "section": "Section B: Research & Innovation Mindset",
-    "question": "Which research infrastructure gaps prevent you from producing high-quality work?",
+    "question": "What research infrastructure gaps most limit your ability to produce high-quality work?",
     "type": "textarea",
     "required": false
   },
+
   {
+    "section": "Investment & Resources",
     "id": "funding_priorities",
-    "section": "Section C: Investment & Resource Perception",
-    "question": "If a research institute received $1M today, which areas should it prioritize?",
+    "question": "If a research institute received $1M, which areas should it prioritize?",
     "type": "text",
-    "placeholder": "Rank priorities",
+    "placeholder": "Rank your top priorities",
     "required": false
   },
   {
+    "section": "Investment & Resources",
     "id": "infra_vs_digital",
-    "section": "Section C: Investment & Resource Perception",
-    "question": "How important is physical infrastructure (labs, equipment) vs. digital access (datasets, cloud) for impactful research?",
+    "question": "How important is physical infrastructure (labs, equipment) compared to digital access (datasets, cloud computing)? (1 = Physical much more important, 5 = Digital much more important)",
     "type": "select",
-    "options": ["1","2","3","4","5"],
+    "options": ["1", "2", "3", "4", "5"],
     "required": true
   },
   {
-    "id": "funding_type",
-    "section": "Section C: Investment & Resource Perception",
-    "question": "Which type of research funding do you believe drives the most innovation: grants, corporate sponsorship, philanthropy, or self-funding?",
-    "type": "text",
-    "placeholder": "List types",
-    "required": false
-  },
-  {
+    "section": "Investment & Resources",
     "id": "participate_if_tools",
-    "section": "Section C: Investment & Resource Perception",
-    "question": "Would you participate in research if access to AI tools or datasets were provided?",
+    "question": "Would you participate more actively in research if given access to AI tools and datasets?",
     "type": "text",
-    "placeholder": "Yes/No + conditions",
+    "placeholder": "Yes/No and any conditions",
     "required": false
   },
+
   {
-    "id": "metrics_for_investors",
-    "section": "Section C: Investment & Resource Perception",
-    "question": "What metrics make research projects attractive for investors?",
-    "type": "textarea",
-    "required": false
-  },
-  {
+    "section": "Societal Impact & Ethics",
     "id": "societal_challenges",
-    "section": "Section D: Societal Impact & Ethical Considerations",
-    "question": "What societal challenges should AI research prioritize over the next 5 years?",
+    "question": "What societal challenges should AI research in Africa prioritize over the next 5 years?",
     "type": "textarea",
     "required": false
   },
   {
+    "section": "Societal Impact & Ethics",
     "id": "ethical_concern",
-    "section": "Section D: Societal Impact & Ethical Considerations",
-    "question": "How concerned are you about ethical risks in AI research?",
+    "question": "How concerned are you about ethical risks in AI development? (1 = Not concerned, 5 = Extremely concerned)",
     "type": "select",
-    "options": ["1","2","3","4","5"],
+    "options": ["1", "2", "3", "4", "5"],
     "required": true
   },
   {
+    "section": "Societal Impact & Ethics",
     "id": "ai_regulation",
-    "section": "Section D: Societal Impact & Ethical Considerations",
-    "question": "Should AI research be regulated or self-governed by the scientific community?",
+    "question": "Should AI research be strictly regulated, self-governed, or both?",
     "type": "select",
-    "options": ["Regulated","Self-governed","Both"],
+    "options": ["Regulated", "Self-governed", "Both"],
     "required": true
   },
+
   {
-    "id": "public_benefits",
-    "section": "Section D: Societal Impact & Ethical Considerations",
-    "question": "Which public benefits would convince you that a research institute is valuable to society?",
-    "type": "text",
-    "placeholder": "Rank benefits",
-    "required": false
-  },
-  {
+    "section": "Skills & Capacity Building",
     "id": "critical_skills",
-    "section": "Section E: Skills & Capacity Building",
-    "question": "Which skills are most critical for future researchers in your field?",
+    "question": "Which skills are most critical for the next generation of African researchers?",
     "type": "textarea",
     "required": false
   },
   {
+    "section": "Skills & Capacity Building",
     "id": "uni_preparedness",
-    "section": "Section E: Skills & Capacity Building",
-    "question": "How well-prepared are current universities in equipping students for AI-driven research?",
+    "question": "How well-prepared are universities in equipping students for AI-driven research? (1 = Poor, 5 = Excellent)",
     "type": "select",
-    "options": ["1","2","3","4","5"],
+    "options": ["1", "2", "3", "4", "5"],
     "required": true
   },
   {
-    "id": "access_to_labs",
-    "section": "Section E: Skills & Capacity Building",
-    "question": "Would access to specialized labs, mentorship, or datasets increase your research output?",
-    "type": "text",
-    "placeholder": "Yes/No + details",
-    "required": false
-  },
-  {
+    "section": "Skills & Capacity Building",
     "id": "barriers_for_young_researchers",
-    "section": "Section E: Skills & Capacity Building",
-    "question": "What barriers prevent young researchers from reaching their potential?",
+    "question": "What are the biggest barriers preventing young researchers from reaching their full potential?",
     "type": "textarea",
     "required": false
   },
+
   {
+    "section": "Collaboration & Networking",
     "id": "collab_value",
-    "section": "Section F: Collaboration & Networking",
-    "question": "How valuable is collaboration with industry, universities, and global institutes for research?",
+    "question": "How valuable is collaboration with industry, universities, and global institutions? (1 = Not valuable, 5 = Extremely valuable)",
     "type": "select",
-    "options": ["1","2","3","4","5"],
+    "options": ["1", "2", "3", "4", "5"],
     "required": true
   },
   {
+    "section": "Collaboration & Networking",
     "id": "best_collab_model",
-    "section": "Section F: Collaboration & Networking",
-    "question": "Which collaboration model works best: project-based, consortium, or open research networks?",
+    "question": "Which collaboration model works best?",
     "type": "select",
-    "options": ["Project-based","Consortium","Open research networks"],
+    "options": ["Project-based", "Consortium", "Open research networks"],
     "required": true
   },
   {
+    "section": "Collaboration & Networking",
     "id": "join_platform",
-    "section": "Section F: Collaboration & Networking",
     "question": "Would you join a platform that connects students, researchers, and investors?",
     "type": "text",
-    "placeholder": "Yes/No + conditions",
+    "placeholder": "Yes/No + any conditions",
     "required": false
   },
   {
+    "section": "Collaboration & Networking",
     "id": "preferred_updates",
-    "section": "Section F: Collaboration & Networking",
-    "question": "How do you prefer to receive research updates or opportunities: newsletters, webinars, or dashboards?",
+    "question": "How would you prefer to receive research updates and opportunities?",
     "type": "select",
-    "options": ["Newsletters","Webinars","Dashboards"],
+    "options": ["Newsletters", "Webinars", "Dashboards", "All of the above"],
     "required": true
   }
 ]

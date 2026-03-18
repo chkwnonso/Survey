@@ -1,290 +1,318 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANARK Dashboard | Live Research Analytics</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-<title>AI Research Analytics Dashboard</title>
+  <style>
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-card: rgba(15, 15, 15, 0.94);
+      --text-primary: #f0f0f0;
+      --text-secondary: #d0d0d0;
+      --gold: #c9a037;
+      --gold-dark: #b8962e;
+      --gold-glow: #d4af37;
+      --border-dark: #2a2a2a;
+    }
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    * { box-sizing: border-box; }
 
-<style>
+    body {
+      font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+      background: var(--bg-dark) url('anark_background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: var(--text-primary);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
 
-/* ===== GLOBAL ===== */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.75);
+      z-index: -1;
+    }
 
-body{
-font-family:Arial,sans-serif;
-background:#000;
-color:#f5f5f5;
-margin:0;
-padding:20px;
-text-align:center;
-}
+    .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
 
-h1{
-color:#d4af37;
-margin-bottom:30px;
-}
+    h1 {
+      color: var(--gold);
+      font-size: clamp(2.6rem, 8vw, 3.8rem);
+      text-shadow: 0 0 25px var(--gold-glow);
+      text-align: center;
+      margin-bottom: 8px;
+    }
 
-/* ===== STAT CARDS ===== */
+    .subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 1.25rem;
+      margin-bottom: 40px;
+    }
 
-.stat-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
-max-width:900px;
-margin:auto;
-margin-bottom:40px;
-}
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(201,160,55,0.15);
+      color: var(--gold);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 0.95rem;
+      margin-bottom: 30px;
+    }
 
-.stat-card{
-background:#111;
-border:1px solid #333;
-padding:20px;
-border-radius:10px;
-}
+    .live-dot {
+      width: 10px;
+      height: 10px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
 
-.stat-card h3{
-margin:0;
-color:#d4af37;
-font-size:16px;
-}
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
 
-.stat-card p{
-font-size:28px;
-margin-top:10px;
-}
+    /* Rest of your styles (stats + charts) - same as before */
+    nav { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 30px; }
+    nav a {
+      padding: 12px 26px;
+      background: linear-gradient(45deg, var(--gold), #d4af37);
+      color: #111;
+      font-weight: 600;
+      border-radius: 50px;
+      text-decoration: none;
+    }
+    nav a:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(201,160,55,0.45); }
 
-/* ===== CHART GRID ===== */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 24px;
+      margin-bottom: 60px;
+    }
 
-.dashboard-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:30px;
-max-width:1000px;
-margin:auto;
-}
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dark);
+      border-radius: 14px;
+      padding: 28px 20px;
+      text-align: center;
+      transition: all 0.4s ease;
+    }
 
-/* ===== CHART CARDS ===== */
+    .stat-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-6px);
+    }
 
-.chart-card{
-background:#111;
-padding:20px;
-border-radius:10px;
-border:1px solid #333;
-}
+    .stat-card h3 { color: var(--gold); margin: 0 0 12px 0; font-size: 1.1rem; }
+    .stat-card p { font-size: 2.8rem; font-weight: 800; margin: 0; }
 
-.chart-card h3{
-margin-top:0;
-color:#d4af37;
-}
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 30px;
+    }
 
-canvas{
-max-width:100%;
-}
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dark);
+      border-radius: 14px;
+      padding: 24px;
+    }
 
-/* ===== FOOTER ===== */
+    .chart-card h3 {
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-footer{
-margin-top:40px;
-padding-top:20px;
-border-top:1px solid #d4af37;
-}
+    canvas { max-width: 100% !important; height: 320px !important; }
 
-footer img{
-width:35px;
-margin-top:8px;
-}
+    footer {
+      margin-top: 80px;
+      text-align: center;
+      opacity: 0.9;
+    }
 
-</style>
+    .mgbdk-logo {
+      width: 52px;
+      margin: 20px auto 0;
+      display: block;
+      transition: all 0.4s ease;
+    }
 
+    .mgbdk-logo:hover {
+      transform: scale(1.25);
+      filter: drop-shadow(0 0 18px var(--gold));
+    }
+  </style>
 </head>
-
 <body>
 
-<h1>AI Research Analytics Dashboard</h1>
+<nav>
+  <a href="index.html">Home</a>
+  <a href="survey.html">Take Survey</a>
+  <a href="dashboard.html">Dashboard</a>
+  <a href="articles.html">Articles</a>
+</nav>
 
-<!-- ===== STAT CARDS ===== -->
+<div class="container">
+  <h1>ANARK Research Dashboard</h1>
+  <p class="subtitle">Live insights from the African AI, Robotics & Biomedical Research Survey</p>
 
-<div class="stat-grid">
+  <div class="live-indicator">
+    <span class="live-dot"></span>
+    LIVE UPDATES ENABLED
+  </div>
 
-<div class="stat-card">
-<h3>Total Participants</h3>
-<p id="totalParticipants">0</p>
-</div>
+  <!-- Stats -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <h3>Total Participants</h3>
+      <p id="totalParticipants">0</p>
+    </div>
+    <div class="stat-card">
+      <h3>Unique Fields</h3>
+      <p id="uniqueFields">0</p>
+    </div>
+    <div class="stat-card">
+      <h3>High AI Familiarity</h3>
+      <p id="awarenessPercent">0%</p>
+    </div>
+    <div class="stat-card">
+      <h3>Strong AI Interest</h3>
+      <p id="interestPercent">0%</p>
+    </div>
+  </div>
 
-<div class="stat-card">
-<h3>Unique Fields</h3>
-<p id="uniqueFields">0</p>
-</div>
-
-<div class="stat-card">
-<h3>AI Awareness</h3>
-<p id="awarenessPercent">0%</p>
-</div>
-
-<div class="stat-card">
-<h3>AI Interest</h3>
-<p id="interestPercent">0%</p>
-</div>
-
-</div>
-
-<!-- ===== CHARTS ===== -->
-
-<div class="dashboard-grid">
-
-<div class="chart-card">
-<h3>Field of Study Distribution</h3>
-<canvas id="fieldChart"></canvas>
-</div>
-
-<div class="chart-card">
-<h3>Interest in AI</h3>
-<canvas id="interestChart"></canvas>
-</div>
-
-<div class="chart-card">
-<h3>AI Awareness</h3>
-<canvas id="awarenessChart"></canvas>
-</div>
-
+  <!-- Charts -->
+  <div class="dashboard-grid">
+    <div class="chart-card">
+      <h3>Field of Study Distribution</h3>
+      <canvas id="fieldChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Interest in AI Research</h3>
+      <canvas id="interestChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>AI Awareness Level</h3>
+      <canvas id="awarenessChart"></canvas>
+    </div>
+  </div>
 </div>
 
 <footer>
-
-<p><strong>Powered by MGBDK — STEM & AI Research Initiative</strong></p>
-
-<p>
-Engineering • Biomedical • Robotics • Data Science • Physics
-</p>
-
-<img src="MGBDK.PNG">
-
+  <p><strong>Powered by MGBDK — STEM & AI Research Initiative</strong></p>
+  <p>Engineering • Biomedical • Robotics • Data Science • Physics</p>
+  <img src="MGBDK.PNG" class="mgbdk-logo" alt="MGBDK Logo">
 </footer>
 
 <script>
+// Global variables to store charts (so we can destroy & recreate them)
+let fieldChartInstance = null;
+let interestChartInstance = null;
+let awarenessChartInstance = null;
 
-async function loadAnalytics(){
+async function loadAnalytics() {
+  try {
+    const res = await fetch("/api/responses");
+    if (!res.ok) throw new Error("Failed to fetch");
 
-const res = await fetch("/api/responses");
+    const data = await res.json();
+    const total = data.length || 0;
 
-const data = await res.json();
+    // Update Stats
+    document.getElementById("totalParticipants").innerText = total;
 
-/* ===== BASIC STATS ===== */
+    const fields = new Set(data.map(r => r.field_of_study || r.education || "Unknown").filter(Boolean));
+    document.getElementById("uniqueFields").innerText = fields.size;
 
-const total = data.length;
+    const highFamiliarity = data.filter(r => parseInt(r.ai_familiarity) >= 4).length;
+    const awarenessPercent = total ? Math.round((highFamiliarity / total) * 100) : 0;
+    document.getElementById("awarenessPercent").innerText = awarenessPercent + "%";
 
-document.getElementById("totalParticipants").innerText = total;
+    const highInterest = data.filter(r => 
+      ["Very interested", "Extremely interested", "Often", "Always"].some(term => 
+        (r.research_frequency || r.ai_interest || "").toLowerCase().includes(term.toLowerCase())
+      )
+    ).length;
+    const interestPercent = total ? Math.round((highInterest / total) * 100) : 0;
+    document.getElementById("interestPercent").innerText = interestPercent + "%";
 
-/* ===== UNIQUE FIELDS ===== */
+    // Destroy old charts before creating new ones
+    if (fieldChartInstance) fieldChartInstance.destroy();
+    if (interestChartInstance) interestChartInstance.destroy();
+    if (awarenessChartInstance) awarenessChartInstance.destroy();
 
-const fields = new Set();
+    // Field Distribution Chart
+    const fieldCounts = {};
+    data.forEach(r => {
+      const field = r.field_of_study || r.education || "Unknown";
+      fieldCounts[field] = (fieldCounts[field] || 0) + 1;
+    });
 
-data.forEach(r=>{
-if(r.field) fields.add(r.field);
-});
+    fieldChartInstance = new Chart(document.getElementById("fieldChart"), {
+      type: "bar",
+      data: {
+        labels: Object.keys(fieldCounts),
+        datasets: [{ label: "Participants", data: Object.values(fieldCounts), backgroundColor: "#c9a037" }]
+      },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
 
-document.getElementById("uniqueFields").innerText = fields.size;
+    // Interest Chart (Pie)
+    const interestCounts = {};
+    data.forEach(r => {
+      const val = r.ai_interest || r.research_frequency || "Unknown";
+      interestCounts[val] = (interestCounts[val] || 0) + 1;
+    });
 
-/* ===== AI AWARENESS ===== */
+    interestChartInstance = new Chart(document.getElementById("interestChart"), {
+      type: "pie",
+      data: {
+        labels: Object.keys(interestCounts),
+        datasets: [{ data: Object.values(interestCounts), backgroundColor: ["#c9a037","#d4af37","#b8962e","#8c6f1f"] }]
+      },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
 
-let awareCount = 0;
+    // Awareness Chart (Doughnut)
+    const awarenessCounts = {};
+    data.forEach(r => {
+      const val = r.ai_familiarity || "Unknown";
+      awarenessCounts[val] = (awarenessCounts[val] || 0) + 1;
+    });
 
-data.forEach(r=>{
-if(r.ai_awareness === "Yes") awareCount++;
-});
+    awarenessChartInstance = new Chart(document.getElementById("awarenessChart"), {
+      type: "doughnut",
+      data: {
+        labels: Object.keys(awarenessCounts),
+        datasets: [{ data: Object.values(awarenessCounts), backgroundColor: ["#c9a037","#d4af37","#b8962e","#555"] }]
+      },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
 
-const awarenessPercent = Math.round((awareCount / total) * 100);
-
-document.getElementById("awarenessPercent").innerText = awarenessPercent + "%";
-
-/* ===== AI INTEREST ===== */
-
-let interestCount = 0;
-
-data.forEach(r=>{
-if(r.ai_interest === "Very Interested" || r.ai_interest === "Interested"){
-interestCount++;
-}
-});
-
-const interestPercent = Math.round((interestCount / total) * 100);
-
-document.getElementById("interestPercent").innerText = interestPercent + "%";
-
-/* ===== FIELD DISTRIBUTION ===== */
-
-const fieldCounts = {};
-
-data.forEach(r=>{
-const field = r.field || "Unknown";
-fieldCounts[field] = (fieldCounts[field] || 0) + 1;
-});
-
-new Chart(document.getElementById("fieldChart"),{
-
-type:"bar",
-
-data:{
-labels:Object.keys(fieldCounts),
-datasets:[{
-label:"Participants",
-data:Object.values(fieldCounts)
-}]
-}
-
-});
-
-/* ===== AI INTEREST CHART ===== */
-
-const interestCounts = {};
-
-data.forEach(r=>{
-const interest = r.ai_interest || "Unknown";
-interestCounts[interest] = (interestCounts[interest] || 0) + 1;
-});
-
-new Chart(document.getElementById("interestChart"),{
-
-type:"pie",
-
-data:{
-labels:Object.keys(interestCounts),
-datasets:[{
-data:Object.values(interestCounts)
-}]
+  } catch (err) {
+    console.error("Dashboard update failed:", err);
+  }
 }
 
-});
-
-/* ===== AI AWARENESS CHART ===== */
-
-const awarenessCounts = {};
-
-data.forEach(r=>{
-const aware = r.ai_awareness || "Unknown";
-awarenessCounts[aware] = (awarenessCounts[aware] || 0) + 1;
-});
-
-new Chart(document.getElementById("awarenessChart"),{
-
-type:"doughnut",
-
-data:{
-labels:Object.keys(awarenessCounts),
-datasets:[{
-data:Object.values(awarenessCounts)
-}]
-}
-
-});
-
-}
-
-loadAnalytics();
-
+// Load immediately + Auto-refresh every 30 seconds
+window.onload = () => {
+  loadAnalytics();
+  setInterval(loadAnalytics, 30000);   // Refresh every 30 seconds
+};
 </script>
 
 </body>

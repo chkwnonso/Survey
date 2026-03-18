@@ -1,282 +1,288 @@
-// survey.js - multi-page dynamic survey with progress bar
+// =============================================
+// ANARK Research Survey - survey.js
+// Multi-section dynamic survey with offline support
+// =============================================
 
 const API_URL = "https://survey-2-v8nc.onrender.com/api/submit";
 
-// ---- Offline storage ----
-let offlineResponses = JSON.parse(localStorage.getItem("offlineSurveyData")) || [];
-
-// ---- Global state ----
+// ============== Global State ==============
 let currentSection = 0;
 let sections = [];
 let sectionResponses = [];
 
-// ---- Load questions ----
+// ============== Load Questions ==============
 async function loadQuestions() {
     try {
         const res = await fetch("questions.json");
-        if (!res.ok) throw new Error("HTTP " + res.status);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-        const questions = await res.json();
-        const container = document.getElementById("questions");
-        container.innerHTML = "";
+        const allQuestions = await res.json();
 
+        // Group questions by section
         const sectionMap = {};
-
-        questions.forEach(q => {
+        allQuestions.forEach(q => {
             if (!sectionMap[q.section]) sectionMap[q.section] = [];
             sectionMap[q.section].push(q);
         });
 
-        sections = Object.keys(sectionMap).map(section => ({
-            name: section,
-            questions: sectionMap[section]
+        sections = Object.keys(sectionMap).map(sectionName => ({
+            name: sectionName,
+            questions: sectionMap[sectionName]
         }));
 
+        // Initialize empty response objects for each section
         sectionResponses = sections.map(() => ({}));
-
-        // Create progress bar & section indicator if not in HTML
-        setupProgressUI();
 
         renderSection(currentSection);
 
     } catch (err) {
         console.error("Failed to load questions:", err);
-        document.getElementById("questions").innerHTML =
-            "<p style='color:red;'>Failed to load survey questions.</p>";
+        document.getElementById("questions").innerHTML = `
+            <p style="color:#ff6b6b; text-align:center; font-size:1.1rem;">
+                Failed to load survey questions. Please refresh the page.
+            </p>`;
     }
 }
 
-// ---- Setup progress UI ----
-function setupProgressUI() {
-    const surveyForm = document.getElementById("surveyForm");
-
-    // Progress container
-    let progressContainer = document.getElementById("progressContainer");
-    if (!progressContainer) {
-        progressContainer = document.createElement("div");
-        progressContainer.id = "progressContainer";
-        progressContainer.style.marginBottom = "20px";
-        surveyForm.prepend(progressContainer);
-
-        // Section indicator
-        const indicator = document.createElement("div");
-        indicator.id = "sectionIndicator";
-        indicator.style.marginBottom = "6px";
-        indicator.style.fontWeight = "bold";
-        progressContainer.appendChild(indicator);
-
-        // Progress bar background
-        const barBg = document.createElement("div");
-        barBg.style.width = "100%";
-        barBg.style.height = "12px";
-        barBg.style.background = "#ccc";
-        barBg.style.borderRadius = "6px";
-        progressContainer.appendChild(barBg);
-
-        // Progress bar itself
-        const bar = document.createElement("div");
-        bar.id = "progressBar";
-        bar.style.height = "12px";
-        bar.style.width = "0%";
-        bar.style.background = "#3b82f6";
-        bar.style.borderRadius = "6px";
-        barBg.appendChild(bar);
-    }
-}
-
-// ---- Render section ----
+// ============== Render Current Section ==============
 function renderSection(index) {
+    if (index < 0 || index >= sections.length) return;
 
+    currentSection = index;
     const container = document.getElementById("questions");
     container.innerHTML = "";
 
-    if (index < 0 || index >= sections.length) return;
-
     const section = sections[index];
 
+    // Section Title
     const title = document.createElement("h3");
-    title.innerText = section.name;
+    title.style.color = "#c9a037";
+    title.style.marginBottom = "25px";
+    title.style.textAlign = "center";
+    title.textContent = section.name;
     container.appendChild(title);
 
+    // Render each question
     section.questions.forEach((q, i) => {
-
         const div = document.createElement("div");
         div.className = "question";
 
         const label = document.createElement("label");
-        label.innerText = (i + 1) + ". " + q.question;
+        label.className = "question-label";
+        label.innerHTML = `${i + 1}. ${q.question}`;
+        if (q.required) label.innerHTML += ' <span style="color:#ff6b6b;">*</span>';
         div.appendChild(label);
 
-        let value = sectionResponses[index][q.id] || "";
+        const savedValue = sectionResponses[index][q.id] || "";
 
         if (!q.type || q.type === "text") {
-
-            const input = document.createElement("input");
-            input.type = "text";
-            input.name = q.id;
-            input.value = value;
-            if (q.required) input.required = true;
+            const input = createInput("text", q.id, savedValue, q.required);
             div.appendChild(input);
-
-        } else if (q.type === "textarea") {
-
+        } 
+        else if (q.type === "email") {
+            const input = createInput("email", q.id, savedValue, q.required);
+            div.appendChild(input);
+        } 
+        else if (q.type === "number") {
+            const input = createInput("number", q.id, savedValue, q.required);
+            div.appendChild(input);
+        } 
+        else if (q.type === "textarea") {
             const textarea = document.createElement("textarea");
             textarea.name = q.id;
-            textarea.rows = 3;
-            textarea.value = value;
+            textarea.rows = 4;
+            textarea.value = savedValue;
             if (q.required) textarea.required = true;
             div.appendChild(textarea);
-
-        } else if (q.type === "select") {
-
-            const select = document.createElement("select");
-            select.name = q.id;
-            if (q.required) select.required = true;
-
-            const empty = document.createElement("option");
-            empty.value = "";
-            empty.innerText = "Select";
-            select.appendChild(empty);
-
-            (q.options || []).forEach(opt => {
-                const option = document.createElement("option");
-                option.value = opt;
-                option.innerText = opt;
-                if (value === opt) option.selected = true;
-                select.appendChild(option);
-            });
-
+        } 
+        else if (q.type === "select") {
+            const select = createSelect(q.id, q.options || [], savedValue, q.required);
             div.appendChild(select);
+        } 
+        else if (q.type === "radio") {
+            const group = createRadioGroup(q.id, q.options || [], savedValue, q.required);
+            div.appendChild(group);
         }
 
         container.appendChild(div);
     });
 
+    updateProgressUI();
     renderNavButtons();
-
-    // ---- Update section indicator ----
-    const indicator = document.getElementById("sectionIndicator");
-    if (indicator && sections.length > 0) {
-        indicator.innerText = `Section ${currentSection + 1} of ${sections.length}`;
-    }
-
-    // ---- Update progress bar ----
-    updateProgressBar();
 }
 
-// ---- Navigation buttons ----
+// ============== Helper Functions for Inputs ==============
+function createInput(type, name, value, required) {
+    const input = document.createElement("input");
+    input.type = type;
+    input.name = name;
+    input.value = value;
+    if (required) input.required = true;
+    return input;
+}
+
+function createSelect(name, options, value, required) {
+    const select = document.createElement("select");
+    select.name = name;
+    if (required) select.required = true;
+
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "Select an option";
+    select.appendChild(placeholder);
+
+    options.forEach(opt => {
+        const option = document.createElement("option");
+        option.value = opt;
+        option.textContent = opt;
+        if (opt === value) option.selected = true;
+        select.appendChild(option);
+    });
+    return select;
+}
+
+function createRadioGroup(name, options, value, required) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "option-group";
+
+    options.forEach(opt => {
+        const label = document.createElement("label");
+        label.className = "option";
+
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = name;
+        radio.value = opt;
+        if (opt === value) radio.checked = true;
+        if (required) radio.required = true;
+
+        label.appendChild(radio);
+        label.appendChild(document.createTextNode(opt));
+        wrapper.appendChild(label);
+    });
+    return wrapper;
+}
+
+// ============== Navigation Buttons ==============
 function renderNavButtons() {
+    let nav = document.getElementById("navButtons");
 
-    let navContainer = document.getElementById("navButtons");
+    // Show/hide buttons
+    document.getElementById("prevBtn").style.display = currentSection > 0 ? "block" : "none";
+    
+    const nextBtn = document.getElementById("nextBtn");
+    const submitBtn = document.getElementById("submitBtn");
 
-    if (!navContainer) {
-        navContainer = document.createElement("div");
-        navContainer.id = "navButtons";
-        document.getElementById("surveyForm").appendChild(navContainer);
+    if (currentSection < sections.length - 1) {
+        nextBtn.style.display = "block";
+        submitBtn.style.display = "none";
+        nextBtn.textContent = "Next →";
+    } else {
+        nextBtn.style.display = "none";
+        submitBtn.style.display = "block";
     }
-
-    navContainer.innerHTML = "";
-
-    if (currentSection > 0) {
-
-        const prevBtn = document.createElement("button");
-        prevBtn.type = "button";
-        prevBtn.innerText = "Previous";
-        prevBtn.onclick = () => {
-            saveSectionResponses();
-            currentSection--;
-            renderSection(currentSection);
-        };
-
-        navContainer.appendChild(prevBtn);
-    }
-
-    const nextBtn = document.createElement("button");
-    nextBtn.type = "button";
-    nextBtn.innerText = currentSection < sections.length - 1 ? "Next" : "Submit";
-    nextBtn.onclick = () => {
-
-        if (!validateSection()) return;
-
-        saveSectionResponses();
-
-        if (currentSection < sections.length - 1) {
-            currentSection++;
-            renderSection(currentSection);
-        } else {
-            submitSurvey();
-        }
-    };
-
-    navContainer.appendChild(nextBtn);
 }
 
-// ---- Validation ----
-function validateSection() {
+// ============== Progress & Section Indicator ==============
+function updateProgressUI() {
+    const progress = ((currentSection + 1) / sections.length) * 100;
+    const progressBar = document.getElementById("progressBar");
+    if (progressBar) progressBar.style.width = `${progress}%`;
 
-    const inputs = document.querySelectorAll(
-        "#questions input, #questions select, #questions textarea"
-    );
-
-    for (let inp of inputs) {
-
-        if (!inp.checkValidity()) {
-            inp.reportValidity();
-            return false;
-        }
+    const indicator = document.getElementById("sectionIndicator");
+    if (indicator) {
+        indicator.textContent = `Section ${currentSection + 1} of ${sections.length}`;
     }
-
-    return true;
 }
 
-// ---- Save responses ----
-function saveSectionResponses() {
-
+// ============== Save Current Section Responses ==============
+function saveCurrentSection() {
     const formData = new FormData(document.getElementById("surveyForm"));
-
-    formData.forEach((v, k) => {
-        sectionResponses[currentSection][k] = v;
+    
+    formData.forEach((value, key) => {
+        if (value.trim() !== "") {
+            sectionResponses[currentSection][key] = value;
+        }
     });
 }
 
-// ---- Submit survey ----
+// ============== Validation ==============
+function validateCurrentSection() {
+    const inputs = document.querySelectorAll("#questions input, #questions select, #questions textarea");
+    
+    for (let input of inputs) {
+        if (input.required && !input.checkValidity()) {
+            input.reportValidity();
+            return false;
+        }
+    }
+    return true;
+}
+
+// ============== Submit Survey ==============
 async function submitSurvey() {
+    saveCurrentSection();
 
-    const finalEntry = Object.assign({}, ...sectionResponses);
-    finalEntry.timestamp = new Date().toISOString();
-    finalEntry.id = Date.now();
+    const finalResponse = {
+        ...Object.assign({}, ...sectionResponses),
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        id: "ANARK-" + Date.now().toString(36).toUpperCase()
+    };
 
-    offlineResponses.push(finalEntry);
+    // Save to offline storage first
+    let offlineResponses = JSON.parse(localStorage.getItem("offlineSurveyData")) || [];
+    offlineResponses.push(finalResponse);
     localStorage.setItem("offlineSurveyData", JSON.stringify(offlineResponses));
 
     try {
         const res = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(finalEntry)
+            body: JSON.stringify(finalResponse)
         });
 
-        if (!res.ok) throw new Error("Network error");
-
-        alert("Survey submitted successfully ✅");
-
-    } catch {
-        alert("Survey saved offline 📱");
+        if (res.ok) {
+            alert("✅ Thank you! Your survey has been submitted successfully.");
+            localStorage.removeItem("offlineSurveyData"); // Clear offline data after successful submit
+        } else {
+            throw new Error("Server error");
+        }
+    } catch (err) {
+        console.warn("Submitted offline due to:", err);
+        alert("📱 Survey saved offline. It will be submitted when you're back online.");
     }
 
+    // Reset survey
     sectionResponses = sections.map(() => ({}));
     currentSection = 0;
-
-    document.getElementById("surveyForm").reset();
-    renderSection(currentSection);
+    renderSection(0);
 }
 
-// ---- Progress Bar ----
-function updateProgressBar() {
-    const progress = ((currentSection + 1) / sections.length) * 100;
-    const bar = document.getElementById("progressBar");
-    if (bar) bar.style.width = progress + "%";
-}
+// ============== Event Listeners ==============
+document.addEventListener("DOMContentLoaded", () => {
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const submitBtn = document.getElementById("submitBtn");
 
-// ---- Start ----
-loadQuestions();
+    prevBtn.addEventListener("click", () => {
+        saveCurrentSection();
+        currentSection--;
+        renderSection(currentSection);
+    });
+
+    nextBtn.addEventListener("click", () => {
+        if (!validateCurrentSection()) return;
+        saveCurrentSection();
+        currentSection++;
+        renderSection(currentSection);
+    });
+
+    submitBtn.addEventListener("click", () => {
+        if (!validateCurrentSection()) return;
+        submitSurvey();
+    });
+
+    // Load questions when page is ready
+    loadQuestions();
+});

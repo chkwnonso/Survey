@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "title": "Transformer Models for Low-Resource African Languages: A Case Study in Yoruba and Igbo",
+    "category": "AI & NLP",
+    "image": "https://picsum.photos/id/1015/800/600",
+    "excerpt": "This paper presents a novel fine-tuning approach that improves machine translation accuracy by 47% for underrepresented African languages.",
+    "author": "Dr. Aisha Bello",
+    "authorTitle": "Lead AI Researcher, University of Lagos",
+    "date": "March 12, 2026",
+    "readTime": "18 min",
+    "featured": true
+  },
+  {
+    "id": 2,
+    "title": "Autonomous Agricultural Drones: Enhancing Food Security in Sub-Saharan Africa",
+    "category": "Robotics",
+    "image": "https://picsum.photos/id/201/800/600",
+    "excerpt": "Deployment of low-cost autonomous drones using computer vision to optimize crop monitoring and reduce pesticide usage by up to 60%.",
+    "author": "Engr. Olumide Adeyemi",
+    "authorTitle": "Robotics Engineer, ANARK Lab",
+    "date": "February 28, 2026",
+    "readTime": "14 min",
+    "featured": false
+  },
+  {
+    "id": 3,
+    "title": "AI-Driven Early Detection of Malaria Using Smartphone Microscopy",
+    "category": "Biomedical Engineering",
+    "image": "https://picsum.photos/id/237/800/600",
+    "excerpt": "A deep learning model achieving 96.4% accuracy in detecting malaria parasites from low-quality smartphone images in rural clinics.",
+    "author": "Dr. Fatima Nkosi",
+    "authorTitle": "Biomedical AI Specialist, University of Cape Town",
+    "date": "February 15, 2026",
+    "readTime": "22 min",
+    "featured": false
+  },
+  {
+    "id": 4,
+    "title": "Ethical Frameworks for Responsible AI Development in Africa",
+    "category": "Ethics & Policy",
+    "image": "https://picsum.photos/id/870/800/600",
+    "excerpt": "Proposing a culturally grounded ethical framework tailored to African values, governance structures, and development priorities.",
+    "author": "Prof. Naledi Khumalo",
+    "authorTitle": "Professor of AI Ethics, University of Johannesburg",
+    "date": "January 20, 2026",
+    "readTime": "25 min",
+    "featured": false
+  }
+]
