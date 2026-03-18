@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANARK Research Hub</title>
+  <title>ANARK | African Network for AI, Robotics & Knowledge</title>
+  <meta name="description" content="Powering Africa’s future through research in AI, Robotics, Biomedical Engineering, Data Science and Physics.">
+  
   <style>
     /* ===== ROOT VARIABLES ===== */
     :root {
       --bg-dark: #0a0a0a;
-      --bg-card: rgba(15, 15, 15, 0.92);
+      --bg-card: rgba(15, 15, 15, 0.94);
       --text-primary: #f0f0f0;
       --text-secondary: #d0d0d0;
       --gold: #c9a037;
@@ -18,249 +20,289 @@
     }
 
     /* ===== GLOBAL ===== */
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', system-ui, Arial, sans-serif;
       background: var(--bg-dark) url('anark_background.jpg') no-repeat center center fixed;
       background-size: cover;
       color: var(--text-primary);
       margin: 0;
-      padding: 20px;
-      text-align: center;
+      padding: 0;
+      line-height: 1.6;
       position: relative;
+      min-height: 100vh;
     }
 
     body::before {
       content: "";
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(10, 10, 10, 0.65);
-      z-index: -2;
-      pointer-events: none;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.72);
+      z-index: -1;
     }
 
     a { text-decoration: none; color: inherit; }
 
-    /* ===== TEXT ===== */
-    h1, .anark-title, .hero-title {
-      color: var(--gold);
-      text-shadow: 
-        0 0 10px var(--gold-glow),
-        0 0 24px rgba(201, 160, 55, 0.45);
-    }
-
-    p, .anark-subtitle, .hero-sub, .fields {
-      max-width: 600px;
-      margin: auto auto 1rem;
-      color: var(--text-secondary);
-      font-size: clamp(1rem, 3vw, 1.1rem);
-    }
-
-    #sectionIndicator {
-      font-size: 0.875rem;
-      opacity: 0.9;
-      margin-bottom: 0.5rem;
-    }
-
-    /* ===== BUTTONS ===== */
-    button, nav a {
-      padding: 15px 25px;
-      margin: 12px;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 8px;
-      background: linear-gradient(45deg, #b8962e, var(--gold-dark), var(--gold));
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.25s ease;
-    }
-
-    button:hover, nav a:hover {
-      background: linear-gradient(45deg, var(--gold), var(--gold-dark), #b8962e);
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 0 12px var(--gold-glow);
-    }
-
-    /* ===== FOCUS STYLES ===== */
-    button:focus-visible, a:focus-visible {
-      outline: 3px solid var(--gold);
-      outline-offset: 3px;
-    }
-
-    /* ===== NAVIGATION ===== */
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    /* ===== HAMBURGER MENU ===== */
-    .menu-toggle {
-      display: none;
-      font-size: 2rem;
-      cursor: pointer;
-      margin: 10px 0;
-      color: var(--gold);
-    }
-
-    /* ===== MOBILE MENU ===== */
-    .nav-buttons {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .nav-buttons.show {
-      display: flex;
-    }
-
-    /* ===== ANARK HEADER ===== */
+    /* ===== HEADER ===== */
     .anark-header {
-      background: radial-gradient(circle at center, #111, var(--bg-dark));
-      padding: clamp(40px, 8vw, 60px) 20px;
+      background: radial-gradient(circle at center, #1a1a1a, var(--bg-dark));
+      padding: clamp(50px, 10vw, 80px) 20px;
       border-bottom: 1px solid var(--gold-dark);
       position: relative;
       overflow: hidden;
     }
 
     .anark-title {
-      font-size: clamp(2.8rem, 10vw, 4rem);
-      letter-spacing: clamp(4px, 1.5vw, 8px);
-      margin: 0;
-      animation: anarkGlow 4s ease-in-out infinite alternate;
+      font-size: clamp(3rem, 9vw, 5rem);
+      letter-spacing: clamp(6px, 2vw, 12px);
+      margin: 0 0 12px 0;
+      font-weight: 800;
+      color: var(--gold);
+      text-shadow: 
+        0 0 20px var(--gold-glow),
+        0 0 40px rgba(201, 160, 55, 0.5);
+      animation: anarkGlow 5s ease-in-out infinite alternate;
     }
 
     .anark-subtitle {
-      margin-top: 12px;
-      font-size: clamp(0.9rem, 2.5vw, 1rem);
-      letter-spacing: 2px;
+      font-size: clamp(1.05rem, 3vw, 1.25rem);
+      letter-spacing: 3px;
+      color: var(--text-secondary);
+      margin: 0;
+      font-weight: 500;
     }
 
     @keyframes anarkGlow {
-      0% { text-shadow: 0 0 10px var(--gold), 0 0 20px var(--gold); }
-      100% { text-shadow: 0 0 40px var(--gold), 0 0 80px rgba(201,160,55,0.7); }
+      from { text-shadow: 0 0 15px var(--gold), 0 0 30px rgba(201,160,55,0.6); }
+      to   { text-shadow: 0 0 35px var(--gold), 0 0 70px rgba(201,160,55,0.85); }
     }
 
-    /* LIGHTWEIGHT PARTICLE BACKGROUND */
+    /* Header particle effect */
     .anark-header::before {
       content: "";
       position: absolute;
       inset: 0;
       background: 
-        radial-gradient(circle at 30% 40%, #c9a03715 1.5px, transparent 1.5px),
-        radial-gradient(circle at 70% 60%, #c9a03712 1.2px, transparent 1.2px);
-      background-size: 60px 60px, 80px 80px;
-      opacity: 0.4;
-      animation: subtleDrift 140s linear infinite;
+        radial-gradient(circle at 25% 35%, #c9a03718 1.8px, transparent 2px),
+        radial-gradient(circle at 75% 65%, #c9a03712 1.4px, transparent 2px);
+      background-size: 70px 70px, 90px 90px;
+      opacity: 0.35;
+      animation: subtleDrift 160s linear infinite;
       pointer-events: none;
     }
 
     @keyframes subtleDrift {
       0%   { background-position: 0 0, 0 0; }
-      100% { background-position: 120px 120px, -100px -100px; }
+      100% { background-position: 140px 140px, -120px -120px; }
     }
 
-    /* ===== HERO ===== */
-    .hero-title {
-      font-size: clamp(2.2rem, 7vw, 2.8rem);
-      letter-spacing: 1px;
-      text-shadow: 0 0 10px var(--gold-glow), 0 0 26px rgba(201,160,55,0.4);
+    /* ===== NAVIGATION ===== */
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 30px;
     }
 
-    .hero-sub {
-      font-size: clamp(1.05rem, 3.5vw, 1.15rem);
-      opacity: 0.9;
-    }
-
-    /* ===== CARDS (GLASS + PREMIUM) ===== */
-    .research-card, .stat, .stat-card, .chart-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-dark);
-      padding: 20px;
-      border-radius: 10px;
-      backdrop-filter: blur(6px);
+    nav a {
+      padding: 14px 28px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      border-radius: 8px;
+      background: linear-gradient(45deg, #b8962e, var(--gold), #d4af37);
+      color: #111;
       transition: all 0.3s ease;
     }
 
-    .research-card:hover, .stat:hover, .stat-card:hover, .chart-card:hover {
-      border-color: var(--gold);
-      box-shadow: 0 0 16px rgba(201,160,55,0.3);
-      transform: translateY(-4px);
+    nav a:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 20px rgba(201, 160, 55, 0.4);
     }
 
-    /* ===== STATS / GRID ===== */
-    .stats, .stat-grid, .dashboard-grid, .research-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      max-width: 1100px;
-      margin: 40px auto;
-    }
-
-    .stat h2, .stat-card p {
-      margin: 8px 0 0;
+    /* Hamburger */
+    .menu-toggle {
+      display: none;
+      position: absolute;
+      top: 25px;
+      right: 25px;
       font-size: 2.2rem;
-      font-weight: bold;
-      color: #ffffff;
+      color: var(--gold);
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 100;
     }
 
-    .stat-card h3, .chart-card h3 {
-      margin: 0;
-      color: var(--gold);
+    .nav-buttons {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .nav-buttons.show {
+      display: flex;
+    }
+
+    .nav-buttons button {
+      width: 90%;
+      max-width: 340px;
+      padding: 16px;
       font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* ===== HERO ===== */
+    #heroLanding {
+      padding: 80px 20px 100px;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .hero-title {
+      font-size: clamp(2.4rem, 7.5vw, 3.4rem);
+      margin-bottom: 18px;
+      color: var(--gold);
+      text-shadow: 0 0 25px var(--gold-glow);
+    }
+
+    .hero-sub {
+      font-size: clamp(1.1rem, 3.5vw, 1.3rem);
+      max-width: 680px;
+      margin: 0 auto 40px;
+      opacity: 0.92;
+    }
+
+    .hero-btn {
+      padding: 16px 32px;
+      margin: 10px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(45deg, var(--gold), #d4af37, var(--gold-dark));
+      color: #111;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .hero-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(201, 160, 55, 0.5);
+    }
+
+    /* ===== STATS ===== */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    .stat {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 32px 20px;
+      backdrop-filter: blur(8px);
+      transition: all 0.4s ease;
+    }
+
+    .stat:hover {
+      border-color: var(--gold);
+      box-shadow: 0 0 25px rgba(201, 160, 55, 0.25);
+      transform: translateY(-8px);
+    }
+
+    .stat h2 {
+      font-size: 3.2rem;
+      margin: 0 0 8px 0;
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .stat p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+    }
+
+    /* ===== RESEARCH GRID ===== */
+    .research-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+      margin: 80px auto;
+      padding: 0 20px;
+    }
+
+    .research-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 28px 24px;
+      text-align: left;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .research-card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 12px 30px rgba(201, 160, 55, 0.25);
+      transform: translateY(-6px);
+    }
+
+    .research-card h3 {
+      color: var(--gold);
+      margin: 0 0 14px 0;
+      font-size: 1.35rem;
     }
 
     /* ===== FOOTER ===== */
     footer {
-      margin-top: 60px;
-      padding: 20px;
+      margin-top: 100px;
+      padding: 50px 20px 40px;
+      text-align: center;
+      border-top: 1px solid var(--border-dark);
       opacity: 0.9;
-      font-size: 0.9rem;
     }
 
     .mgbdk-logo {
-      width: 40px;
-      margin: 12px auto 0;
+      width: 52px;
+      margin: 20px auto 0;
       display: block;
-      transition: all 0.3s ease;
-      cursor: pointer;
+      transition: all 0.4s ease;
     }
 
     .mgbdk-logo:hover {
-      transform: scale(1.25);
-      filter: drop-shadow(0 0 12px var(--gold));
+      transform: scale(1.3) rotate(8deg);
+      filter: drop-shadow(0 0 15px var(--gold));
     }
 
-    /* ===== REDUCED MOTION ===== */
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .menu-toggle { display: block; }
+      nav { display: none; }
+      
+      .stats, .research-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation: none !important;
         transition: none !important;
-      }
-    }
-
-    /* ===== SMOOTH SCROLL ===== */
-    html { scroll-behavior: smooth; }
-
-    /* ===== MOBILE POLISH ===== */
-    @media (max-width: 600px) {
-      body { padding: 16px; }
-      .anark-header { padding: 40px 16px; }
-      .stats, .research-grid, .stat-grid, .dashboard-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-      .menu-toggle { display: block; }
-      nav { display: none; }
-      .nav-buttons button {
-        width: 90%;
-        max-width: 320px;
-        padding: 14px;
-        font-size: 1.05rem;
-        margin: 6px 0;
       }
     }
   </style>
@@ -268,92 +310,132 @@
 <body>
 
 <header class="anark-header">
-<h1 class="anark-title">ANARK</h1>
-<p class="anark-subtitle">African Network for AI, Robotics & Knowledge</p>
-<div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  <h1 class="anark-title">ANARK</h1>
+  <p class="anark-subtitle">AFRICAN NETWORK FOR AI, ROBOTICS & KNOWLEDGE</p>
 
-<nav>
-<a href="index.html">Home</a>
-<a href="survey.html">Survey</a>
-<a href="dashboard.html">Dashboard</a>
-<a href="articles.html">Articles</a>
-</nav>
+  <button class="menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()">☰</button>
 
-<div class="nav-buttons" id="navMenu">
-<button data-link="index.html">Home</button>
-<button data-link="survey.html">Survey</button>
-<button data-link="dashboard.html">Dashboard</button>
-<button data-link="articles.html">Articles</button>
-</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="survey.html">Survey</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="articles.html">Articles</a>
+  </nav>
+
+  <div class="nav-buttons" id="navMenu">
+    <button data-link="index.html">Home</button>
+    <button data-link="survey.html">Take Survey</button>
+    <button data-link="dashboard.html">Dashboard</button>
+    <button data-link="articles.html">Research Articles</button>
+  </div>
 </header>
 
 <section id="heroLanding">
-<h1 class="hero-title">Welcome to ANARK</h1>
-<p class="hero-sub">Powering Africa’s Future in AI, Robotics, Biomedical Science & Advanced Research.</p>
-<button class="hero-btn" data-link="survey.html">Take Research Survey</button>
-<button class="hero-btn" data-link="articles.html">Read Research Articles</button>
+  <h1 class="hero-title">Welcome to ANARK</h1>
+  <p class="hero-sub">
+    Powering Africa’s future through cutting-edge research in Artificial Intelligence, 
+    Robotics, Biomedical Engineering, Data Science, and Physics.
+  </p>
+  
+  <div>
+    <button class="hero-btn" data-link="survey.html">Take the Research Survey</button>
+    <button class="hero-btn" data-link="articles.html">Explore Research Articles</button>
+  </div>
 </section>
 
 <div class="stats">
-<div class="stat"><h2 id="participants">0</h2><p>Survey Participants</p></div>
-<div class="stat"><h2>5</h2><p>Research Fields</p></div>
-<div class="stat"><h2>2026</h2><p>Research Initiative</p></div>
+  <div class="stat">
+    <h2 id="participants">0</h2>
+    <p>Survey Participants</p>
+  </div>
+  <div class="stat">
+    <h2>5</h2>
+    <p>Core Research Fields</p>
+  </div>
+  <div class="stat">
+    <h2>2026</h2>
+    <p>Launch Year</p>
+  </div>
 </div>
 
 <section class="research-grid">
-<div class="research-card"><h3>AI Robotics</h3><p>Developing intelligent robotic systems for engineering and automation.</p></div>
-<div class="research-card"><h3>Biomedical Engineering</h3><p>Applying AI to healthcare diagnostics and medical technologies.</p></div>
-<div class="research-card"><h3>Data Science</h3><p>Leveraging machine learning and analytics for research insights.</p></div>
-<div class="research-card"><h3>Physics Simulation</h3><p>Using computational models to study complex physical systems.</p></div>
+  <div class="research-card">
+    <h3>AI & Robotics</h3>
+    <p>Building intelligent autonomous systems for African challenges in automation, agriculture, and industry.</p>
+  </div>
+  <div class="research-card">
+    <h3>Biomedical Engineering</h3>
+    <p>AI-powered healthcare diagnostics, medical imaging, and affordable biomedical technologies.</p>
+  </div>
+  <div class="research-card">
+    <h3>Data Science & ML</h3>
+    <p>Leveraging big data and machine learning for impactful research and policy insights.</p>
+  </div>
+  <div class="research-card">
+    <h3>Physics & Simulation</h3>
+    <p>Advanced computational modeling and simulation of complex physical systems.</p>
+  </div>
 </section>
 
-<div id="aiFact">Fun AI Fact: The first AI program was written in 1951.</div>
+<div id="aiFact" style="margin: 60px auto; max-width: 700px; font-style: italic; opacity: 0.85;">
+  Fun AI Fact: The first AI program was written in 1951.
+</div>
 
 <footer>
-<p><strong>Powered by MGBDK — STEM & AI Research Initiative</strong></p>
-<p>Engineering • Biomedical • Robotics • Data Science • Physics</p>
-<img src="MGBDK.PNG" class="mgbdk-logo" alt="MGBDK Logo" loading="lazy">
+  <p><strong>Powered by MGBDK — STEM & AI Research Initiative</strong></p>
+  <p>Engineering • Biomedical • Robotics • Data Science • Physics</p>
+  <img src="MGBDK.PNG" class="mgbdk-logo" alt="MGBDK Logo" loading="lazy">
 </footer>
 
 <script>
-// ===== MOBILE MENU =====
-function toggleMenu(){
+// Mobile Menu
+function toggleMenu() {
   document.getElementById("navMenu").classList.toggle("show");
 }
 
-// ===== GLOBAL LINK HANDLER =====
-document.addEventListener("click", function(e){
+// Global link handler for data-link buttons
+document.addEventListener("click", (e) => {
   const target = e.target.closest("[data-link]");
-  if(target){
+  if (target) {
     const link = target.getAttribute("data-link");
-    if(link) window.location.href = link;
+    if (link) window.location.href = link;
   }
 });
 
-// ===== AI FACT ROTATOR =====
-const facts=[
-"The first AI program was written in 1951.",
-"Machine learning improves with large datasets.",
-"AI is transforming medicine and engineering.",
-"Nigeria has a rapidly growing tech ecosystem.",
-"Transformer models power modern AI systems."
+// AI Fact Rotator
+const facts = [
+  "The first AI program was written in 1951.",
+  "Machine learning models improve dramatically with high-quality African datasets.",
+  "Nigeria is one of the fastest growing tech ecosystems in Africa.",
+  "Transformer architecture revolutionized modern AI in 2017.",
+  "AI is being used to detect diseases earlier in low-resource settings."
 ];
-const factEl=document.getElementById("aiFact");
-setInterval(()=>{
-  const fact=facts[Math.floor(Math.random()*facts.length)];
-  factEl.innerText="Fun AI Fact: "+fact;
-},8000);
 
-// ===== LIVE PARTICIPANT COUNTER =====
-async function loadParticipants(){
-  try{
-    const res=await fetch("/api/responses");
-    const data=await res.json();
-    document.getElementById("participants").innerText=data.length;
-  }catch{
-    document.getElementById("participants").innerText="--";
+const factEl = document.getElementById("aiFact");
+let currentFact = 0;
+
+setInterval(() => {
+  currentFact = (currentFact + 1) % facts.length;
+  factEl.style.opacity = 0;
+  
+  setTimeout(() => {
+    factEl.innerText = "Fun AI Fact: " + facts[currentFact];
+    factEl.style.opacity = 0.85;
+  }, 400);
+}, 7000);
+
+// Live Participant Counter
+async function loadParticipants() {
+  try {
+    const res = await fetch("/api/responses");
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    document.getElementById("participants").innerText = data.length || "—";
+  } catch (err) {
+    document.getElementById("participants").innerText = "—";
   }
 }
+
 loadParticipants();
 </script>
 
