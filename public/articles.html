@@ -29,28 +29,132 @@
 
     body::before {
       content: ""; position: fixed; inset: 0;
-      background: rgba(10,10,10,0.78); z-index: -1;
+      background: rgba(10,10,10,0.72); z-index: -1;
+    }
+
+    /* =============================================
+       COMPACT PROFESSIONAL HEADER
+    ============================================= */
+    .anark-header {
+      background: transparent;
+      padding: clamp(12px, 3vw, 20px) 20px clamp(4px, 1.5vw, 10px);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      border-bottom: 1px solid rgba(201, 160, 55, 0.12);
+    }
+
+    .anark-logo-container {
+      margin: 0 auto 4px;
+    }
+
+    .anark-logo-image {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+      width: clamp(180px, 40vw, 380px);          /* much smaller now */
+      height: auto;
+      filter: drop-shadow(0 0 18px rgba(201, 160, 55, 0.6)) drop-shadow(0 0 36px rgba(212, 175, 55, 0.3));
+      animation: anarkLogoFloat 18s ease-in-out infinite;
+      transition: transform 0.4s ease, filter 0.4s ease;
+    }
+
+    .anark-logo-image:hover,
+    .anark-logo-image:focus {
+      transform: scale(1.04);
+      filter: drop-shadow(0 0 32px rgba(201, 160, 55, 0.9)) drop-shadow(0 0 60px rgba(212, 175, 55, 0.6));
+    }
+
+    @keyframes anarkLogoFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-6px) rotate(0.2deg); }
+    }
+
+    .anark-subtitle {
+      font-size: clamp(0.8rem, 2vw, 0.95rem);
+      letter-spacing: 2.2px;
+      color: var(--text-secondary);
+      margin: 2px 0 6px;
+      font-weight: 500;
+      opacity: 0.88;
+      text-shadow: 0 0 6px rgba(201, 160, 55, 0.2);
     }
 
     nav {
-      display: flex; justify-content: center; gap: 18px; flex-wrap: wrap;
-      padding: 25px 20px; background: rgba(10,10,10,0.7);
-      backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 2px;
     }
 
     nav a {
-      padding: 12px 28px; background: linear-gradient(45deg, var(--gold), #d4af37);
-      color: #111; font-weight: 700; border-radius: 50px; text-decoration: none;
-      transition: all 0.3s ease;
+      padding: 8px 18px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 50px;
+      background: rgba(201, 160, 55, 0.10);
+      backdrop-filter: blur(6px);
+      color: var(--gold);
+      border: 1px solid rgba(201, 160, 55, 0.3);
+      transition: all 0.35s ease;
+      text-decoration: none;
     }
-    nav a:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 10px 25px rgba(201,160,55,0.5); }
 
-    .container { max-width: 1180px; margin: 40px auto; padding: 0 20px; }
+    nav a:hover,
+    nav a:focus,
+    nav a.active {
+      background: linear-gradient(45deg, var(--gold), #d4af37);
+      color: #111;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 14px rgba(201, 160, 55, 0.45);
+      border-color: transparent;
+    }
+
+    .menu-toggle {
+      display: none;
+      position: absolute;
+      top: 12px;
+      right: 18px;
+      font-size: 1.9rem;
+      color: var(--gold);
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 100;
+    }
+
+    .nav-buttons {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .nav-buttons.show { display: flex; }
+
+    .nav-buttons button {
+      width: 90%;
+      max-width: 300px;
+      padding: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      background: linear-gradient(45deg, var(--gold), #d4af37);
+      color: #111;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(201, 160, 55, 0.3);
+    }
+
+    /* Your original content styles – unchanged */
+    .container { max-width: 1180px; margin: 30px auto 60px; padding: 0 20px; } /* pulled up closer */
 
     .featured-hero {
       background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('https://picsum.photos/id/1015/1200/600');
       background-size: cover; background-position: center;
-      border-radius: 20px; padding: 80px 40px; margin-bottom: 70px;
+      border-radius: 20px; padding: 70px 40px; margin-bottom: 60px;
       text-align: center; color: white;
     }
 
@@ -58,27 +162,16 @@
     .featured-hero h1 { font-size: clamp(2.4rem, 7vw, 3.6rem); margin: 0 0 20px 0; color: var(--gold); }
     .featured-hero p { max-width: 700px; margin: 0 auto 30px; font-size: 1.2rem; opacity: 0.95; }
 
-    .btn-featured {
-      background: var(--gold); color: #111; padding: 14px 32px; border: none;
-      border-radius: 50px; font-weight: 700; cursor: pointer;
-    }
+    .btn-featured { background: var(--gold); color: #111; padding: 14px 32px; border: none; border-radius: 50px; font-weight: 700; cursor: pointer; }
     .btn-featured:hover { transform: scale(1.08); }
 
     .filters { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 50px; }
-    .filter-btn {
-      padding: 10px 22px; background: rgba(255,255,255,0.08); border: 1px solid var(--border-dark);
-      border-radius: 50px; color: var(--text-secondary); cursor: pointer;
-    }
+    .filter-btn { padding: 10px 22px; background: rgba(255,255,255,0.08); border: 1px solid var(--border-dark); border-radius: 50px; color: var(--text-secondary); cursor: pointer; }
     .filter-btn.active, .filter-btn:hover { background: var(--gold); color: #111; }
 
-    .search-box {
-      padding: 14px 24px; width: 380px; max-width: 100%; background: rgba(255,255,255,0.08);
-      border: 1px solid var(--border-dark); border-radius: 50px; color: white; font-size: 1.05rem;
-    }
+    .search-box { padding: 14px 24px; width: 380px; max-width: 100%; background: rgba(255,255,255,0.08); border: 1px solid var(--border-dark); border-radius: 50px; color: white; font-size: 1.05rem; }
 
-    .articles-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 32px;
-    }
+    .articles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 32px; }
 
     .article-card {
       background: var(--bg-card); border: 1px solid var(--border-dark);
@@ -86,21 +179,12 @@
       display: flex; flex-direction: column; height: 100%;
     }
 
-    .article-card:hover {
-      transform: translateY(-12px); border-color: var(--gold);
-      box-shadow: 0 20px 40px rgba(201,160,55,0.25);
-    }
+    .article-card:hover { transform: translateY(-12px); border-color: var(--gold); box-shadow: 0 20px 40px rgba(201,160,55,0.25); }
 
     .article-image { height: 220px; background-size: cover; background-position: center; position: relative; }
-    .article-image::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(10,10,10,0.85), transparent);
-    }
+    .article-image::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,0.85), transparent); }
 
-    .category {
-      position: absolute; top: 16px; left: 16px; background: var(--gold); color: #111;
-      font-size: 0.85rem; font-weight: 700; padding: 6px 14px; border-radius: 30px;
-    }
+    .category { position: absolute; top: 16px; left: 16px; background: var(--gold); color: #111; font-size: 0.85rem; font-weight: 700; padding: 6px 14px; border-radius: 30px; }
 
     .article-content { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
     .article-content h3 { margin: 0 0 14px 0; font-size: 1.45rem; line-height: 1.3; color: var(--gold); }
@@ -125,25 +209,54 @@
     .submit-btn:hover { transform: scale(1.1); }
 
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; z-index: 300; }
-    .modal-content {
-      background: #111; border: 1px solid var(--gold); border-radius: 16px;
-      width: 90%; max-width: 600px; padding: 40px; position: relative;
-    }
+    .modal-content { background: #111; border: 1px solid var(--gold); border-radius: 16px; width: 90%; max-width: 600px; padding: 40px; position: relative; }
     .close { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: var(--gold); }
 
     footer { text-align: center; margin-top: 100px; padding: 40px 20px; opacity: 0.9; }
     .mgbdk-logo { width: 52px; margin: 20px auto 0; display: block; transition: all 0.4s ease; }
     .mgbdk-logo:hover { transform: scale(1.25); filter: drop-shadow(0 0 18px var(--gold)); }
+
+    @media (max-width: 768px) {
+      .menu-toggle { display: block; }
+      nav { display: none; }
+      .anark-logo-image { width: clamp(200px, 55vw, 340px); }
+      nav a { padding: 8px 16px; font-size: 0.92rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
   </style>
 </head>
 <body>
 
-<nav>
-  <a href="index.html">Home</a>
-  <a href="survey.html">Take Survey</a>
-  <a href="dashboard.html">Dashboard</a>
-  <a href="articles.html">Articles</a>
-</nav>
+<header class="anark-header">
+  <div class="anark-logo-container">
+    <img 
+      src="ANARK3.png" 
+      alt="ANARK - African Network for AI, Robotics & Knowledge" 
+      class="anark-logo-image"
+      loading="lazy"
+    >
+    <p class="anark-subtitle">AFRICAN NETWORK FOR AI, ROBOTICS & KNOWLEDGE</p>
+  </div>
+
+  <button class="menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()">☰</button>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="survey.html">Take Survey</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="articles.html" class="active">Articles</a>
+  </nav>
+
+  <div class="nav-buttons" id="navMenu">
+    <button data-link="index.html">Home</button>
+    <button data-link="survey.html">Take Survey</button>
+    <button data-link="dashboard.html">Dashboard</button>
+    <button data-link="articles.html">Articles</button>
+  </div>
+</header>
 
 <div class="container">
   <div class="featured-hero" id="featuredHero"></div>
@@ -158,7 +271,7 @@
 
 <button class="submit-btn" onclick="showSubmitModal()">Submit Your Article</button>
 
-<!-- Submit Modal (same as before) -->
+<!-- Submit Modal -->
 <div class="modal" id="submitModal">
   <div class="modal-content">
     <span class="close" onclick="hideSubmitModal()">×</span>
@@ -188,25 +301,45 @@
 </footer>
 
 <script>
-// Load articles from JSON
+// Mobile menu toggle
+function toggleMenu() {
+  document.getElementById("navMenu").classList.toggle("show");
+}
+
+document.addEventListener("click", (e) => {
+  const target = e.target.closest("[data-link]");
+  if (target) {
+    const link = target.getAttribute("data-link");
+    if (link) window.location.href = link;
+  }
+});
+
+// Article logic (unchanged from working version)
 let allArticles = [];
 
 async function loadArticles() {
   try {
     const res = await fetch("articles.json");
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     allArticles = await res.json();
     renderFeatured();
     renderCategoryFilters();
     renderArticles(allArticles);
   } catch (err) {
-    console.error("Failed to load articles.json", err);
+    console.error("Failed to load articles.json:", err);
+    document.getElementById("articlesGrid").innerHTML = "<p style='text-align:center; color:#ff6b6b; grid-column:1/-1;'>Error loading articles. Check console and articles.json file.</p>";
   }
 }
 
 function renderFeatured() {
-  const featured = allArticles.find(a => a.featured);
-  if (!featured) return;
-  document.getElementById("featuredHero").innerHTML = `
+  const featured = allArticles.find(a => a.featured === true);
+  const heroEl = document.getElementById("featuredHero");
+  if (!featured) {
+    heroEl.innerHTML = "<p style='text-align:center; opacity:0.7;'>No featured article found.</p>";
+    return;
+  }
+  
+  heroEl.innerHTML = `
     <div class="tag">Featured Research</div>
     <h1>${featured.title}</h1>
     <p>${featured.excerpt}</p>
@@ -217,9 +350,8 @@ function renderFeatured() {
 
 function renderCategoryFilters() {
   const categories = ["all", ...new Set(allArticles.map(a => a.category))];
-  const container = document.getElementById("categoryFilters");
-  container.innerHTML = categories.map(cat => `
-    <button class="filter-btn ${cat==='all'?'active':''}" 
+  document.getElementById("categoryFilters").innerHTML = categories.map(cat => `
+    <button class="filter-btn ${cat === 'all' ? 'active' : ''}" 
             data-category="${cat}" 
             onclick="filterByCategory(this)">
       ${cat === 'all' ? 'All' : cat}
@@ -230,6 +362,11 @@ function renderCategoryFilters() {
 function renderArticles(articles) {
   const grid = document.getElementById("articlesGrid");
   grid.innerHTML = "";
+
+  if (articles.length === 0) {
+    grid.innerHTML = "<p style='text-align:center; grid-column:1/-1; opacity:0.8;'>No articles match your search/filter.</p>";
+    return;
+  }
 
   articles.forEach(article => {
     const card = document.createElement("div");
@@ -267,7 +404,8 @@ function filterByCategory(btn) {
 
 function filterArticles() {
   const term = document.getElementById("searchInput").value.toLowerCase().trim();
-  const activeCategory = document.querySelector('.filter-btn.active').getAttribute('data-category');
+  const activeBtn = document.querySelector('.filter-btn.active');
+  const activeCategory = activeBtn ? activeBtn.getAttribute('data-category') : "all";
 
   let filtered = activeCategory === "all" ? allArticles : allArticles.filter(a => a.category === activeCategory);
 
