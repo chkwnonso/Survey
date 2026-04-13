@@ -1,80 +1,98 @@
-// server.js - Node.js API + serve website (multi-instance safe)
-
-const express = require("express");
-const bodyParser = require("body-parser");
-const fs = require("fs");
-const path = require("path");
-const cors = require("cors");
+// server.js
+const express = require('express');
+const path = require('path');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ======================
 // Middleware
-app.use(bodyParser.json());
-app.use(cors());
-app.use(express.static(path.join(__dirname, "public")));
+// ======================
+app.use(express.json());                    // Parse JSON bodies
 
-const FILE_PATH = path.join(__dirname, "responses.json");
+// Serve static files from "public" folder - This makes your website work
+app.use(express.static(path.join(__dirname, 'public')));
 
-// ---- Helper functions ----
+// ======================
+// Routes
+// ======================
 
-// Read responses from file safely
-function readResponses() {
-    try {
-        if (fs.existsSync(FILE_PATH)) {
-            const data = fs.readFileSync(FILE_PATH, "utf8");
-            return data ? JSON.parse(data) : [];
-        }
-        return [];
-    } catch (err) {
-        console.error("Failed to read responses.json:", err.message);
-        return [];
-    }
-}
-
-// Write responses to file safely
-function writeResponses(data) {
-    try {
-        fs.writeFileSync(FILE_PATH, JSON.stringify(data, null, 2));
-    } catch (err) {
-        console.error("Failed to write responses.json:", err.message);
-    }
-}
-
-// ------------------------
-// Serve homepage
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "survey.html"));
+// Home route - serves your public/index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// ------------------------
-// POST survey submissions
-app.post("/api/submit", (req, res) => {
-    const entry = req.body;
-
-    // Add timestamp and ID
-    entry.timestamp = entry.timestamp || new Date().toISOString();
-    entry.id = entry.id || Date.now();
-
-    // Always read current file, append, write back
-    const allResponses = readResponses();
-    allResponses.push(entry);
-    writeResponses(allResponses);
-
-    console.log("Received entry:", entry);
-
-    res.json({ status: "success", message: "Response saved" });
+// Health check route (tests both server and database)
+app.get('/api/health', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW() as current_time');
+    res.json({
+      status: 'ok',
+      database_time: result.rows[0].current_time,
+      message: 'Server & PostgreSQL are running smoothly!'
+    });
+  } catch (err) {
+    console.error('Health check error:', err.message);
+    res.status(500).json({
+      status: 'error',
+      message: 'Database connection failed',
+      error: err.message
+    });
+  }
 });
 
-// ------------------------
-// GET all responses
-app.get("/api/responses", (req, res) => {
-    const allResponses = readResponses();
-    res.json(allResponses);
+// Example: Get users (you can remove or modify later)
+app.get('/api/users', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, name, email FROM users ORDER BY id');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
 });
 
-// ------------------------
-// Start server
+// 404 handler - shows when route is not found
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Route not found',
+    message: `Cannot ${req.method} ${req.url}`
+  });
+});
+
+// ======================
+// PostgreSQL Connection Pool
+// ======================
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  // Render Postgres requires SSL
+  ssl: {
+    rejectUnauthorized: false   // Required for Render
+  }
+});
+
+// Test database connection on startup
+pool.query('SELECT NOW()')
+  .then(() => {
+    console.log('✅ Connected to PostgreSQL successfully!');
+  })
+  .catch(err => {
+    console.error('❌ Database connection failed:', err.message);
+    console.error('Make sure DATABASE_URL is set correctly in Render Environment tab.');
+  });
+
+// Test database connection on startup
+pool.query('SELECT NOW()')
+  .then(() => console.log('✅ Connected to PostgreSQL'))
+  .catch(err => console.error('❌ Database connection failed:', err.message));
+
+// ======================
+// Start Server
+// ======================
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT} ✅`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`📁 Serving static files from: /public`);
 });
