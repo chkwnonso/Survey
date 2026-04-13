@@ -467,12 +467,13 @@ setInterval(() => {
 // Live Participant Counter
 async function loadParticipants() {
   try {
-    const res = await fetch("/api/responses");
+    const res = await fetch("https://survey-2-v8nc.onrender.com/api/responses");
     if (!res.ok) throw new Error();
     const data = await res.json();
     document.getElementById("participants").innerText = data.length || "—";
   } catch (err) {
     document.getElementById("participants").innerText = "—";
+    console.error("Failed to load participants", err);
   }
 }
 
