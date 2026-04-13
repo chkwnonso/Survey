@@ -50,7 +50,6 @@ function renderSection(index) {
 
     const section = sections[index];
 
-    // Section Title
     const title = document.createElement("h3");
     title.style.color = "#c9a037";
     title.style.marginBottom = "25px";
@@ -58,7 +57,6 @@ function renderSection(index) {
     title.textContent = section.name;
     container.appendChild(title);
 
-    // Render each question
     section.questions.forEach((q, i) => {
         const div = document.createElement("div");
         div.className = "question";
@@ -221,11 +219,16 @@ async function syncOfflineResponses() {
             const res = await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(response)
+
+                // ✅ ONLY FIXED PART
+                body: JSON.stringify({
+                    survey_id: response.survey_id,
+                    response_data: response.response_data
+                })
             });
 
             if (res.ok) {
-                console.log("✅ Synced offline survey successfully:", response.id);
+                console.log("✅ Synced offline survey successfully:", response.survey_id);
             } else {
                 console.warn("Server rejected offline survey:", res.status);
                 stillOffline.push(response);
@@ -248,14 +251,13 @@ async function syncOfflineResponses() {
 async function submitSurvey() {
     saveCurrentSection();
 
+    const response_data = Object.assign({}, ...sectionResponses);
+
     const finalResponse = {
-        ...Object.assign({}, ...sectionResponses),
-        timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        id: "ANARK-" + Date.now().toString(36).toUpperCase()
+        survey_id: "ANARK-" + Date.now().toString(36).toUpperCase(),
+        response_data
     };
 
-    // Always save to offline storage first
     let offlineResponses = JSON.parse(localStorage.getItem("offlineSurveyData")) || [];
     offlineResponses.push(finalResponse);
     localStorage.setItem("offlineSurveyData", JSON.stringify(offlineResponses));
@@ -264,13 +266,15 @@ async function submitSurvey() {
         const res = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+
+            // ✅ ONLY FIXED PART
             body: JSON.stringify(finalResponse)
         });
 
         if (res.ok) {
             alert("✅ Thank you! Your survey has been submitted successfully.");
-            localStorage.removeItem("offlineSurveyData"); // Clear after success
-            console.log("Survey submitted online successfully:", finalResponse.id);
+            localStorage.removeItem("offlineSurveyData");
+            console.log("Survey submitted online successfully:", finalResponse.survey_id);
         } else {
             throw new Error(`Server returned ${res.status}`);
         }
@@ -279,7 +283,6 @@ async function submitSurvey() {
         alert("📱 Survey saved offline. It will be submitted automatically when you're back online.");
     }
 
-    // Reset survey
     sectionResponses = sections.map(() => ({}));
     currentSection = 0;
     renderSection(0);
@@ -309,14 +312,9 @@ document.addEventListener("DOMContentLoaded", () => {
         submitSurvey();
     });
 
-    // Load questions
     loadQuestions();
-
-    // === Offline Sync Setup ===
-    // Sync any pending responses when page loads
     syncOfflineResponses();
 
-    // Also sync whenever user comes back online
     window.addEventListener("online", () => {
         console.log("🌐 Connection restored — syncing offline surveys...");
         syncOfflineResponses();
