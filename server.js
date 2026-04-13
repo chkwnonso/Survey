@@ -128,6 +128,69 @@ app.post('/api/survey', async (req, res) => {
   }
 });
 
+//admin dash board//
+app.get('/admin/responses', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM survey_responses ORDER BY submitted_at DESC'
+    );
+
+    const rows = result.rows;
+
+    let html = `
+    <html>
+    <head>
+      <title>Admin Responses</title>
+      <style>
+        body { font-family: Arial; background:#111; color:#fff; padding:20px; }
+        h2 { color:#c9a037; }
+        .card {
+          background:#222;
+          padding:15px;
+          margin-bottom:10px;
+          border-radius:8px;
+        }
+        .id { color:#c9a037; font-weight:bold; }
+        .time { font-size:12px; color:#aaa; margin-bottom:10px; }
+        pre {
+          background:#000;
+          padding:10px;
+          overflow:auto;
+          border-radius:6px;
+        }
+      </style>
+    </head>
+    <body>
+      <h2>📊 Survey Responses (Admin Dashboard)</h2>
+      <p>Total Responses: ${rows.length}</p>
+    `;
+
+    if (rows.length === 0) {
+      html += `<p>No responses yet.</p>`;
+    } else {
+      rows.forEach(r => {
+        html += `
+          <div class="card">
+            <div class="id">ID: ${r.survey_id}</div>
+            <div class="time">Submitted: ${r.submitted_at}</div>
+            <pre>${JSON.stringify(r.response_data, null, 2)}</pre>
+          </div>
+        `;
+      });
+    }
+
+    html += `
+    </body>
+    </html>
+    `;
+
+    res.send(html);
+
+  } catch (err) {
+    console.error('Admin dashboard error:', err.message);
+    res.status(500).send('Error loading responses');
+  }
+});
 // ======================
 // 404 Handler (MUST BE LAST)
 // ======================
