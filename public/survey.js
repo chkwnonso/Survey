@@ -251,7 +251,9 @@ async function syncOfflineResponses() {
 async function submitSurvey() {
     saveCurrentSection();
 
-    const response_data = Object.assign({}, ...sectionResponses);
+    const response_data = sectionResponses.reduce((acc, section) => {
+    return { ...acc, ...section };
+    }, {});
 
     const finalResponse = {
         survey_id: "ANARK-" + Date.now().toString(36).toUpperCase(),
