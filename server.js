@@ -229,6 +229,17 @@ app.get('/api/test-db', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+app.get('/api/debug-responses', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM survey_responses');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ======================
 // 404 Handler (MUST BE LAST)
 // ======================
