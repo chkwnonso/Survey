@@ -219,6 +219,16 @@ app.get('/api/responses', async (req, res) => {
     });
   }
 });
+
+app.get('/api/test-db', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW()');
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
 // ======================
 // 404 Handler (MUST BE LAST)
 // ======================
