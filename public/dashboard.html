@@ -226,7 +226,7 @@ let awarenessChartInstance = null;
 
 async function loadAnalytics() {
   try {
-    const res = await fetch("/api/responses");
+    const res = await fetch("https://survey-2-v8nc.onrender.com/api/responses");
     if (!res.ok) throw new Error("Failed to fetch");
 
     const data = await res.json();
