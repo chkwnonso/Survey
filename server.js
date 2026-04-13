@@ -191,6 +191,34 @@ app.get('/admin/responses', async (req, res) => {
     res.status(500).send('Error loading responses');
   }
 });
+
+
+// ======================
+// GET ALL SURVEY RESPONSES (FIX FOR DASHBOARD)
+// ======================
+app.get('/api/responses', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM survey_responses ORDER BY submitted_at DESC'
+    );
+
+    // flatten JSONB for frontend
+    const formatted = result.rows.map(r => ({
+      survey_id: r.survey_id,
+      submitted_at: r.submitted_at,
+      ...r.response_data
+    }));
+
+    res.json(formatted);
+
+  } catch (err) {
+    console.error('Fetch responses error:', err.message);
+    res.status(500).json({
+      error: 'Failed to fetch responses',
+      details: err.message
+    });
+  }
+});
 // ======================
 // 404 Handler (MUST BE LAST)
 // ======================
