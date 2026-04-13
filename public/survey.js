@@ -3,7 +3,7 @@
 // Multi-section dynamic survey with offline support
 // =============================================
 
-const API_URL = "https://survey-2-v8nc.onrender.com/api/submit";
+const API_URL = "https://survey-2-v8nc.onrender.com/api/survey";
 
 // ============== Global State ==============
 let currentSection = 0;
